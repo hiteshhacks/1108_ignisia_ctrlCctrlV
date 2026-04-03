@@ -47,3 +47,48 @@
 .animate-fade-up       { animation: fade-up 0.4s ease-out both; }
 .animate-slide-in      { animation: slide-in-right 0.35s ease-out both; }
 .animate-live-dot      { animation: live-dot 1.6s ease-in-out infinite; }
+
+/* ── Teal / Blue Color Scheme ─────────────────────────────────── */
+:root {
+  --jeevan-teal-50:  #f0fdfa;
+  --jeevan-teal-100: #ccfbf1;
+  --jeevan-teal-200: #99f6e4;
+  --jeevan-teal-400: #2dd4bf;
+  --jeevan-teal-500: #14b8a6;
+  --jeevan-teal-600: #0d9488;
+  --jeevan-teal-700: #0f766e;
+  --jeevan-blue-50:  #eff6ff;
+  --jeevan-blue-100: #dbeafe;
+  --jeevan-blue-400: #60a5fa;
+  --jeevan-blue-500: #3b82f6;
+  --jeevan-blue-600: #2563eb;
+  --jeevan-blue-700: #1d4ed8;
+  --jeevan-page-bg:  #f4fafb;
+}
+
+/* ── Floating Card Utility ────────────────────────────────────── */
+.floating-card {
+  background: #ffffff;
+  border: 1px solid rgba(20, 184, 166, 0.08);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 3px rgba(13, 148, 136, 0.04),
+    0 4px 20px rgba(13, 148, 136, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.floating-card:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 2px 8px rgba(13, 148, 136, 0.08),
+    0 8px 32px rgba(13, 148, 136, 0.10);
+}
+
+.floating-card-static {
+  background: #ffffff;
+  border: 1px solid rgba(20, 184, 166, 0.08);
+  border-radius: 1rem;
+  box-shadow:
+    0 1px 3px rgba(13, 148, 136, 0.04),
+    0 4px 20px rgba(13, 148, 136, 0.06);
+}

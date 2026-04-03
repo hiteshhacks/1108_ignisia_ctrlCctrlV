@@ -16,6 +16,24 @@ import {
   CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
 
+// ─── Extract API Types ────────────────────────────────────────────
+
+interface ExtractTest {
+  name: string;
+  value: string;
+  unit: string;
+  reference_range: string;
+  date: string;
+}
+
+interface ExtractData {
+  timeline: string[];
+  tests: ExtractTest[];
+  patient: { name: string; age: string; gender: string };
+  lab_name: string;
+  doctor_name: string;
+}
+
 // ─── Mock Data ────────────────────────────────────────────────────
 
 const vitalSignsData = [
@@ -109,17 +127,48 @@ export function PatientDetail() {
   const [uploadedFiles, setUploadedFiles] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
 
+  const [uploading, setUploading]       = useState(false);
+  const [extractData, setExtractData]   = useState<ExtractData | null>(null);
+  const [extractError, setExtractError] = useState<string | null>(null);
+
+  const uploadToExtract = async (file: File) => {
+    setUploading(true);
+    setExtractError(null);
+    setExtractData(null);
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const res = await fetch('http://localhost:8000/extract', {
+        method: 'POST',
+        body: formData,
+      });
+      const json = await res.json();
+      if (!res.ok || !json.success) {
+        throw new Error(json.detail || json.message || 'Extraction failed');
+      }
+      setExtractData(json.data);
+      setUploadedFiles(prev => [...prev, file.name]);
+    } catch (err) {
+      setExtractError(err instanceof Error ? err.message : 'Upload failed');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setDragging(false);
-    const names = Array.from(e.dataTransfer.files).map(f => f.name);
-    setUploadedFiles(prev => [...prev, ...names]);
+    const file = e.dataTransfer.files[0];
+    if (file) uploadToExtract(file);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const names = Array.from(e.target.files).map(f => f.name);
-      setUploadedFiles(prev => [...prev, ...names]);
+    const file = e.target.files?.[0];
+    if (file) {
+      uploadToExtract(file);
+      e.target.value = '';
     }
   };
 
@@ -292,8 +341,7 @@ export function PatientDetail() {
                 <input
                   ref={fileRef}
                   type="file"
-                  multiple
-                  accept=".pdf,.png,.jpg,.jpeg,.csv"
+                  accept=".png,.jpg,.jpeg,.webp"
                   className="hidden"
                   onChange={handleFileChange}
                 />
@@ -301,20 +349,38 @@ export function PatientDetail() {
                   onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
                   onDragLeave={() => setDragging(false)}
                   onDrop={handleDrop}
-                  onClick={() => fileRef.current?.click()}
+                  onClick={() => !uploading && fileRef.current?.click()}
                   className={`
-                    border-2 border-dashed rounded-xl p-8 text-center cursor-pointer transition-all
+                    border-2 border-dashed rounded-xl p-8 text-center transition-all
+                    ${uploading ? 'cursor-wait opacity-60' : 'cursor-pointer'}
                     ${dragging
                       ? 'border-blue-400 bg-blue-50'
                       : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50'}
                   `}
                 >
-                  <Upload className={`h-8 w-8 mx-auto mb-3 ${dragging ? 'text-blue-500' : 'text-slate-300'}`} />
-                  <p className="text-sm font-medium text-slate-700 mb-1">
-                    {dragging ? 'Drop files here' : 'Drag & drop files, or click to browse'}
-                  </p>
-                  <p className="text-xs text-slate-400">PDF, PNG, JPG, CSV · Max 20 MB per file</p>
+                  {uploading ? (
+                    <>
+                      <div className="h-8 w-8 mx-auto mb-3 rounded-full border-2 border-blue-500 border-t-transparent animate-spin" />
+                      <p className="text-sm font-medium text-blue-600">Extracting data from image…</p>
+                      <p className="text-xs text-slate-400 mt-0.5">This may take a few seconds</p>
+                    </>
+                  ) : (
+                    <>
+                      <Upload className={`h-8 w-8 mx-auto mb-3 ${dragging ? 'text-blue-500' : 'text-slate-300'}`} />
+                      <p className="text-sm font-medium text-slate-700 mb-1">
+                        {dragging ? 'Drop image here' : 'Drag & drop a lab report image, or click to browse'}
+                      </p>
+                      <p className="text-xs text-slate-400">PNG, JPG, JPEG, WEBP · Max 20 MB</p>
+                    </>
+                  )}
                 </div>
+
+                {extractError && (
+                  <div className="mt-3 flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-3 py-2.5">
+                    <AlertTriangle className="h-4 w-4 text-red-500 flex-shrink-0" />
+                    <p className="text-xs text-red-700">{extractError}</p>
+                  </div>
+                )}
 
                 {uploadedFiles.length > 0 && (
                   <div className="mt-3 space-y-1.5">
@@ -329,6 +395,53 @@ export function PatientDetail() {
                         </button>
                       </div>
                     ))}
+                  </div>
+                )}
+
+                {/* ── Extracted Results ───────────────────────── */}
+                {extractData && (
+                  <div className="mt-4 border border-emerald-200 rounded-xl overflow-hidden">
+                    {/* Header */}
+                    <div className="bg-emerald-50 px-4 py-3 border-b border-emerald-200">
+                      <div className="flex items-center gap-2 mb-1">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                        <span className="text-sm font-semibold text-emerald-800">Extraction Successful</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-0.5 mt-2">
+                        <p className="text-xs text-slate-600"><span className="font-medium">Patient:</span> {extractData.patient.name || '—'}</p>
+                        <p className="text-xs text-slate-600"><span className="font-medium">Age:</span> {extractData.patient.age || '—'}</p>
+                        <p className="text-xs text-slate-600"><span className="font-medium">Gender:</span> {extractData.patient.gender || '—'}</p>
+                        <p className="text-xs text-slate-600"><span className="font-medium">Date:</span> {extractData.timeline[0] || '—'}</p>
+                        <p className="text-xs text-slate-600 col-span-2"><span className="font-medium">Lab:</span> {extractData.lab_name || '—'}</p>
+                        <p className="text-xs text-slate-600 col-span-2"><span className="font-medium">Doctor:</span> {extractData.doctor_name || '—'}</p>
+                      </div>
+                    </div>
+
+                    {/* Tests table */}
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs">
+                        <thead>
+                          <tr className="bg-slate-50 border-b border-slate-200">
+                            <th className="text-left px-3 py-2 font-semibold text-slate-600 w-1/2">Test</th>
+                            <th className="text-right px-3 py-2 font-semibold text-slate-600">Value</th>
+                            <th className="text-right px-3 py-2 font-semibold text-slate-600">Unit</th>
+                            <th className="text-right px-3 py-2 font-semibold text-slate-600">Reference</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {extractData.tests.map((test, i) => (
+                            <tr key={i} className="border-b border-slate-100 last:border-0 hover:bg-slate-50 transition-colors">
+                              <td className="px-3 py-2 text-slate-700 leading-snug">{test.name}</td>
+                              <td className="px-3 py-2 text-right font-semibold text-slate-900">
+                                {test.value || <span className="text-slate-400 font-normal">—</span>}
+                              </td>
+                              <td className="px-3 py-2 text-right text-slate-500">{test.unit}</td>
+                              <td className="px-3 py-2 text-right text-slate-400">{test.reference_range}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
                   </div>
                 )}
               </div>
