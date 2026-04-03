@@ -6,3 +6,10 @@ pydantic
 dotenv
 python-multipart
 agno
+langchain
+langchain-community
+langchain-qdrant
+langchain-huggingface
+qdrant-client
+sentence-transformers
+pypdf
