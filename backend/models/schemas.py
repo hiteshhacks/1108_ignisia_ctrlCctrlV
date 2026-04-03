@@ -7,9 +7,7 @@ class ExtractionResponse(BaseModel):
     message: str
 
 class ReasoningRequest(BaseModel):
-    success: bool = True
-    data: dict
-    message: str = ""
+    patient_name: str
 
 class ReasoningResponse(BaseModel):
     success: bool

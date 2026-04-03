@@ -1,0 +1,142 @@
+[
+  {
+    "condition": "lactate > 2 mmol/L",
+    "interpretation": "possible tissue hypoperfusion; suspect early sepsis",
+    "confidence": "high",
+    "severity": "high",
+    "source": "Surviving Sepsis Campaign 2021"
+  },
+  {
+    "condition": "lactate rising over time",
+    "interpretation": "worsening perfusion; increasing risk of septic shock",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "Surviving Sepsis Campaign 2021"
+  },
+  {
+    "condition": "lactate > 4 mmol/L",
+    "interpretation": "severe sepsis or septic shock likely",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "Surviving Sepsis Campaign 2021"
+  },
+  {
+    "condition": "systolic BP < 90 mmHg",
+    "interpretation": "hypotension; possible shock state",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "NICE Sepsis Guideline"
+  },
+  {
+    "condition": "MAP < 65 mmHg",
+    "interpretation": "inadequate organ perfusion; shock risk",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "Surviving Sepsis Campaign 2021"
+  },
+  {
+    "condition": "lactate > 2 mmol/L AND MAP < 65 mmHg",
+    "interpretation": "high likelihood of septic shock",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "Surviving Sepsis Campaign 2021"
+  },
+  {
+    "condition": "heart rate > 100 bpm",
+    "interpretation": "tachycardia; possible systemic inflammatory response",
+    "confidence": "medium",
+    "severity": "medium",
+    "source": "NICE Sepsis Guideline"
+  },
+  {
+    "condition": "respiratory rate > 22 breaths/min",
+    "interpretation": "respiratory distress; possible sepsis indicator",
+    "confidence": "high",
+    "severity": "high",
+    "source": "qSOFA criteria"
+  },
+  {
+    "condition": "altered mental status",
+    "interpretation": "possible organ dysfunction due to sepsis",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "qSOFA criteria"
+  },
+  {
+    "condition": "urine output < 0.5 ml/kg/hr",
+    "interpretation": "possible acute kidney injury (AKI)",
+    "confidence": "high",
+    "severity": "high",
+    "source": "ICU Clinical Standards"
+  },
+  {
+    "condition": "creatinine rising over time",
+    "interpretation": "worsening renal function; AKI risk",
+    "confidence": "high",
+    "severity": "high",
+    "source": "KDIGO Guidelines"
+  },
+  {
+    "condition": "WBC > 12000 OR WBC < 4000",
+    "interpretation": "abnormal immune response; possible infection",
+    "confidence": "medium",
+    "severity": "medium",
+    "source": "SIRS Criteria"
+  },
+  {
+    "condition": "platelets < 100000",
+    "interpretation": "possible coagulopathy; severe infection risk",
+    "confidence": "medium",
+    "severity": "high",
+    "source": "Sepsis Clinical Indicators"
+  },
+  {
+    "condition": "SpO2 < 90%",
+    "interpretation": "hypoxia; possible respiratory failure",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "WHO Clinical Guidelines"
+  },
+  {
+    "condition": "temperature > 38.3°C OR temperature < 36°C",
+    "interpretation": "abnormal temperature; infection indicator",
+    "confidence": "medium",
+    "severity": "medium",
+    "source": "SIRS Criteria"
+  },
+  {
+    "condition": "lactate rising AND BP dropping",
+    "interpretation": "possible progression to septic shock",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "Surviving Sepsis Campaign 2021"
+  },
+  {
+    "condition": "HR > 100 AND RR > 22 AND fever present",
+    "interpretation": "systemic inflammatory response; possible sepsis",
+    "confidence": "high",
+    "severity": "high",
+    "source": "SIRS + qSOFA"
+  },
+  {
+    "condition": "creatinine rising AND urine output decreasing",
+    "interpretation": "acute kidney injury likely",
+    "confidence": "high",
+    "severity": "high",
+    "source": "KDIGO Guidelines"
+  },
+  {
+    "condition": "platelets dropping AND lactate rising",
+    "interpretation": "possible severe sepsis with coagulopathy",
+    "confidence": "medium",
+    "severity": "critical",
+    "source": "Sepsis Clinical Patterns"
+  },
+  {
+    "condition": "persistent hypotension despite fluids",
+    "interpretation": "septic shock requiring vasopressors",
+    "confidence": "high",
+    "severity": "critical",
+    "source": "Surviving Sepsis Campaign 2021"
+  }
+]
