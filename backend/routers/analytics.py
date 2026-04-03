@@ -39,7 +39,8 @@ async def get_patient_chart_data(patient_name: str):
         chart_data[t_name]["data"].append({
             "date": t.get("test_date", "Unknown Date"),
             "value": num_val,
-            "raw_value_string": raw_val
+            "raw_value_string": raw_val,
+            "test_name":t_name
         })
         
     return {

@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
-from routers import extraction, reasoning, analytics
+from routers import extraction, reasoning, analytics, report, generate_report
 from database import init_db
 
 @asynccontextmanager
@@ -23,6 +23,8 @@ app.add_middleware(
 app.include_router(extraction.router)
 app.include_router(reasoning.router)
 app.include_router(analytics.router)
+app.include_router(report.router)
+app.include_router(generate_report.report_router)
 
 @app.get("/health")
 async def health_check():
