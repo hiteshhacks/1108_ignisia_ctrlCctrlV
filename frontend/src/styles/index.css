@@ -1,0 +1,49 @@
+@import './fonts.css';
+@import './tailwind.css';
+@import './theme.css';
+
+/* ── Jeevan Medical UI — Global Animations ────────────────────── */
+
+/* Biometric ring pulse (login screen) */
+@keyframes bio-pulse {
+  0%   { transform: scale(1);    box-shadow: 0 0 0 0   rgba(37, 99, 235, 0.45); }
+  70%  { transform: scale(1.04); box-shadow: 0 0 0 18px rgba(37, 99, 235, 0);   }
+  100% { transform: scale(1);    box-shadow: 0 0 0 0   rgba(37, 99, 235, 0);    }
+}
+
+/* Critical patient card — red glow pulse */
+@keyframes critical-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.0), 0 1px 3px rgba(0,0,0,0.1); }
+  50%       { box-shadow: 0 0 0 6px rgba(220, 38, 38, 0.2), 0 1px 3px rgba(0,0,0,0.1); }
+}
+
+/* Warning patient card — amber glow pulse */
+@keyframes warning-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.0), 0 1px 3px rgba(0,0,0,0.1); }
+  50%       { box-shadow: 0 0 0 5px rgba(217, 119, 6, 0.18), 0 1px 3px rgba(0,0,0,0.1); }
+}
+
+/* Smooth fade-up entry */
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Alert slide-in from right */
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Dot blink for live indicator */
+@keyframes live-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
+}
+
+.animate-bio-pulse     { animation: bio-pulse 2.2s ease-in-out infinite; }
+.animate-critical-glow { animation: critical-glow 2.4s ease-in-out infinite; }
+.animate-warning-glow  { animation: warning-glow 2.8s ease-in-out infinite; }
+.animate-fade-up       { animation: fade-up 0.4s ease-out both; }
+.animate-slide-in      { animation: slide-in-right 0.35s ease-out both; }
+.animate-live-dot      { animation: live-dot 1.6s ease-in-out infinite; }
