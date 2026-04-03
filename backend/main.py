@@ -1,25 +1,39 @@
+# ── Load .env from project root before any module (Groq/Qdrant) reads env vars
+import os
+from pathlib import Path
+from dotenv import load_dotenv
+_env_path = Path(__file__).parent.parent / ".env"
+load_dotenv(dotenv_path=_env_path, override=False)
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from routers import extraction, reasoning, analytics, report, generate_report
 from database import init_db
 
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Run database initialization on startup
     init_db()
     yield
 
-app = FastAPI(title="Medical Data API", lifespan=lifespan)
+
+app = FastAPI(
+    title="Jeevan ICU Sepsis Detection API",
+    description="AI-assisted early sepsis detection for ICU monitoring",
+    version="2.0.0",
+    lifespan=lifespan,
+)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000", "http://127.0.0.1:5173", "http://localhost:5174", "http://127.0.0.1:5174"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# ── Core feature routers ──────────────────────────────────────────
 app.include_router(extraction.router)
 app.include_router(reasoning.router)
 app.include_router(analytics.router)
@@ -31,9 +45,23 @@ async def health_check():
     """Health check endpoint"""
     return {
         "status": "healthy",
-        "service": "File Data Extraction API",
-        "vision_model": "Groq LLaVA 1.5 7B"
+        "service": "Jeevan ICU Sepsis Detection API",
+        "version": "2.0.0",
+        "endpoints": [
+            "POST /extract",
+            "POST /reason-medical",
+            "GET  /api/patients",
+            "GET  /api/patients/{id}",
+            "GET  /api/patients/{id}/vitals",
+            "GET  /api/patients/{id}/labs",
+            "GET  /api/patients/{id}/timeline",
+            "GET  /api/patients/{id}/risk-assessment",
+            "GET  /api/alerts",
+            "POST /api/alerts/{id}/dismiss",
+            "GET  /api/handover",
+        ],
     }
+
 
 if __name__ == "__main__":
     import uvicorn

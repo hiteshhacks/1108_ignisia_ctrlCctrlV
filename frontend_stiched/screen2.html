@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Patient Analytics | Clinical Precision</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#004692",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#d5e3ff",
+                        "surface": "#f7f9fb",
+                        "surface-container-lowest": "#ffffff",
+                        "on-surface": "#191c1e",
+                        "on-surface-variant": "#424752",
+                        "surface-container-low": "#f2f4f6",
+                        "outline-variant": "#c2c6d4",
+                        "error": "#ba1a1a"
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .chart-card {
+            transition: box-shadow 0.2s ease;
+        }
+
+        .chart-card:hover {
+            box-shadow: 0 8px 30px rgba(0, 70, 146, 0.12);
+        }
+
+        .timeline-dot {
+            z-index: 10;
+        }
+
+        @keyframes pulse-blue {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .5
+            }
+        }
+
+        .loading-pulse {
+            animation: pulse-blue 1.5s ease-in-out infinite;
+        }
+
+        /* Status pill colors */
+        .pill-high {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .pill-low {
+            background: #ffedd5;
+            color: #9a3412;
+        }
+
+        .pill-normal {
+            background: #dcfce7;
+            color: #166534;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface">
+    <!-- Sidebar -->
+    <aside class="flex flex-col fixed left-0 top-0 z-40 bg-white border-r border-slate-100 h-screen w-64">
+        <div class="px-6 py-8 border-b border-slate-100">
+            <h1 class="text-xl font-black text-primary tracking-tight">Clinical Precision</h1>
+            <p class="text-[10px] text-slate-400 mt-0.5 uppercase tracking-wider font-semibold">Medical AI Platform</p>
+        </div>
+        <nav class="flex-1 px-4 py-6 space-y-1">
+            <a href="screen1.html"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low text-sm font-medium transition-colors">
+                <span class="material-symbols-outlined text-base">upload_file</span>Upload Report
+            </a>
+            <a href="#"
+                class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/8 text-primary text-sm font-semibold transition-colors">
+                <span class="material-symbols-outlined text-base"
+                    style="font-variation-settings:'FILL' 1">analytics</span>Analytics
+            </a>
+        </nav>
+    </aside>
+
+    <!-- Top Header -->
+    <header
+        class="fixed top-0 right-0 left-64 h-16 flex justify-between items-center px-8 z-30 bg-white/90 backdrop-blur-md border-b border-slate-100">
+        <div class="flex items-center gap-2 text-on-surface-variant text-sm font-medium">
+            <span class="text-slate-400">Patients</span>
+            <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
+            <span class="text-primary font-bold" id="headerPatientName">Loading...</span>
+            <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
+            <span class="text-on-surface-variant">Analytics</span>
+        </div>
+        <div id="statusBadge"
+            class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-700">
+            Loading data...
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="ml-64 pt-24 pb-16 px-8 min-h-screen">
+
+        <!-- Patient Overview Card -->
+        <section class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 mb-8 relative overflow-hidden">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/3 to-transparent pointer-events-none"></div>
+            <div class="relative flex items-start justify-between">
+                <div>
+                    <p class="text-[10px] font-bold uppercase tracking-widest text-primary mb-2">Patient Report</p>
+                    <h2 class="text-3xl font-black text-on-surface tracking-tight" id="mainPatientName">Loading...</h2>
+                    <p class="text-on-surface-variant mt-1 text-sm" id="patientSubtitle">Fetching medical records...</p>
+                </div>
+                <button id="generateBtn"
+                    class="bg-primary text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20">
+                    <span class="material-symbols-outlined text-lg"
+                        style="font-variation-settings:'FILL' 1">auto_awesome</span>
+                    Generate AI Report
+                </button>
+            </div>
+            <!-- Summary stat pills (filled after data loads) -->
+            <div class="flex gap-3 mt-6 flex-wrap" id="summaryPills">
+                <span class="loading-pulse inline-block w-24 h-6 rounded-full bg-slate-100"></span>
+                <span class="loading-pulse inline-block w-24 h-6 rounded-full bg-slate-100"></span>
+                <span class="loading-pulse inline-block w-24 h-6 rounded-full bg-slate-100"></span>
+            </div>
+        </section>
+
+        <!-- Analytics Grid: Charts + Timeline -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <!-- Left: Charts area (dynamic) -->
+            <div class="lg:col-span-2 space-y-6" id="chartsContainer">
+                <!-- Loading skeleton -->
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="loading-pulse h-5 w-40 bg-slate-100 rounded mb-6"></div>
+                    <div class="loading-pulse h-48 bg-slate-50 rounded-xl"></div>
+                </div>
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+                    <div class="loading-pulse h-5 w-56 bg-slate-100 rounded mb-6"></div>
+                    <div class="loading-pulse h-48 bg-slate-50 rounded-xl"></div>
+                </div>
+            </div>
+
+            <!-- Right: Timeline -->
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 h-fit">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-bold text-on-surface">Lab Timeline</h3>
+                    <span class="material-symbols-outlined text-slate-400 text-base">history</span>
+                </div>
+                <div id="timelineEntries"
+                    class="space-y-0 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
+                    <div class="text-slate-400 text-sm loading-pulse pl-10">Loading entries...</div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const patientName = urlParams.get('patient_name') || 'Unknown';
+
+        document.getElementById('headerPatientName').textContent = patientName;
+        document.getElementById('mainPatientName').textContent = patientName;
+
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            window.location.href = `screen3.html?patient_name=${encodeURIComponent(patientName)}`;
+        });
+
+        // Sanitise test name so it works as a DOM id
+        function sanitiseId(name) {
+            return 'chart-' + name.replace(/[^a-zA-Z0-9]/g, '_');
+        }
+
+        function getRangeStatus(value, refRange) {
+            if (!refRange || value === 0 || isNaN(value)) return 'normal';
+            const lt = refRange.match(/^<\s*([\d.]+)/);
+            if (lt) return value >= parseFloat(lt[1]) ? 'high' : 'normal';
+            const gt = refRange.match(/^>\s*([\d.]+)/);
+            if (gt) return value <= parseFloat(gt[1]) ? 'low' : 'normal';
+            const rng = refRange.match(/([\d.]+)\s*[-–]\s*([\d.]+)/);
+            if (rng) { const lo = parseFloat(rng[1]), hi = parseFloat(rng[2]); return value < lo ? 'low' : value > hi ? 'high' : 'normal'; }
+            return 'normal';
+        }
+
+        function renderCharts(chartData) {
+            const container = document.getElementById('chartsContainer');
+            container.innerHTML = '';
+
+            const tests = Object.entries(chartData);
+            if (tests.length === 0) {
+                container.innerHTML = '<div class="bg-white rounded-2xl p-8 text-center text-slate-400">No chart data available for this patient.</div>';
+                return;
+            }
+
+            // Build summary pills
+            let high = 0, low = 0, normal = 0;
+
+            tests.forEach(([testName, testInfo]) => {
+                if (!testInfo.data || testInfo.data.length === 0) return;
+
+                // Sort dates
+                const sorted = [...testInfo.data].sort((a, b) => {
+                    const da = a.date.split('/').reverse().join('-');
+                    const db = b.date.split('/').reverse().join('-');
+                    return da.localeCompare(db);
+                });
+                const labels = sorted.map(d => d.date);
+                const values = sorted.map(d => typeof d.value === 'number' ? d.value : parseFloat(d.value) || 0);
+
+                // Latest value for status
+                const latestVal = values[values.length - 1];
+                const status = getRangeStatus(latestVal, testInfo.reference_range);
+                if (status === 'high') high++;
+                else if (status === 'low') low++;
+                else normal++;
+
+                const chartId = sanitiseId(testName);
+                const statusColor = status === 'high' ? '#ef4444' : status === 'low' ? '#f97316' : '#004692';
+                const statusLabel = status === 'high' ? '▲ ELEVATED' : status === 'low' ? '▼ BELOW RANGE' : '● STABLE';
+                const statusClass = status === 'high' ? 'pill-high' : status === 'low' ? 'pill-low' : 'pill-normal';
+
+                const card = document.createElement('div');
+                card.className = 'chart-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100';
+                card.innerHTML = `
+                    <div class="flex items-start justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-on-surface leading-tight">${testName}</h3>
+                            <p class="text-xs text-slate-400 mt-0.5">Unit: ${testInfo.unit || '—'} &nbsp;|&nbsp; Ref: ${testInfo.reference_range || '—'}</p>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${statusClass}">${statusLabel}</span>
+                    </div>
+                    <canvas id="${chartId}" height="100"></canvas>`;
+                container.appendChild(card);
+
+                new Chart(document.getElementById(chartId).getContext('2d'), {
+                    type: 'line',
+                    data: {
+                        labels,
+                        datasets: [{
+                            label: testName,
+                            data: values,
+                            borderColor: statusColor,
+                            backgroundColor: statusColor + '18',
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: statusColor,
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                            borderWidth: 2.5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                callbacks: {
+                                    label: ctx => `${ctx.parsed.y} ${testInfo.unit || ''}`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                grid: { color: '#f0f2f5' },
+                                ticks: { font: { size: 11 } }
+                            },
+                            x: {
+                                grid: { display: false },
+                                ticks: { font: { size: 11 } }
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Update summary pills
+            document.getElementById('summaryPills').innerHTML = `
+                <span class="pill-high px-3 py-1 rounded-full text-[11px] font-bold">${high} Elevated</span>
+                <span class="pill-low px-3 py-1 rounded-full text-[11px] font-bold">${low} Below Range</span>
+                <span class="pill-normal px-3 py-1 rounded-full text-[11px] font-bold">${normal} Normal</span>
+                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600">${tests.length} Total Tests</span>`;
+        }
+
+        function renderTimeline(rawTests) {
+            const timeline = document.getElementById('timelineEntries');
+            if (!rawTests || rawTests.length === 0) {
+                timeline.innerHTML = '<p class="pl-10 text-slate-400 text-sm">No timeline entries found.</p>';
+                return;
+            }
+            timeline.innerHTML = '';
+
+            // Group by date — deduplicate test names per date
+            const byDate = {};
+            rawTests.forEach(t => {
+                const d = t.test_date || 'Unknown';
+                if (!byDate[d]) byDate[d] = {};
+                // Keep latest value if duplicate
+                byDate[d][t.test_name] = t;
+            });
+
+            Object.keys(byDate)
+                .sort((a, b) => {
+                    const pa = a.split('/').reverse().join('-');
+                    const pb = b.split('/').reverse().join('-');
+                    return pb.localeCompare(pa);
+                })
+                .forEach((date, idx) => {
+                    const tests = Object.values(byDate[date]);
+                    const entry = document.createElement('div');
+                    entry.className = 'relative pl-10 pb-7';
+                    const testsHtml = tests.map(t => {
+                        const val = t.test_value || '—';
+                        const status = getRangeStatus(parseFloat(val) || 0, t.reference_range);
+                        const dot = status === 'high' ? '🔴' : status === 'low' ? '🟠' : '🟢';
+                        return `<span class="inline-block text-[10px] ${status === 'high' ? 'text-red-600' : status === 'low' ? 'text-orange-500' : 'text-green-700'} font-semibold mr-1">${dot} ${t.test_name}: <strong>${val} ${t.unit || ''}</strong></span>`;
+                    }).join('<br>');
+
+                    entry.innerHTML = `
+                        <div class="timeline-dot absolute left-0 top-1 w-8 h-8 rounded-full bg-white border-2 border-primary flex items-center justify-center shadow-sm">
+                            <span class="material-symbols-outlined text-primary" style="font-size:14px">lab_research</span>
+                        </div>
+                        <div class="bg-surface-container-low rounded-xl p-4">
+                            <span class="text-[10px] font-bold text-primary uppercase tracking-wider">${date}</span>
+                            <h4 class="text-sm font-bold text-on-surface mt-1 mb-2">Lab Results &nbsp;<span class="text-[10px] text-slate-400 font-normal">(${tests.length} test${tests.length > 1 ? 's' : ''})</span></h4>
+                            <div class="text-xs leading-relaxed space-y-0.5">${testsHtml}</div>
+                        </div>`;
+                    timeline.appendChild(entry);
+                });
+        }
+
+        async function loadData() {
+            const statusBadge = document.getElementById('statusBadge');
+            try {
+                // CORRECT endpoint: /patient/{name}/chart-data (no /api/ prefix)
+                const res = await fetch(`http://127.0.0.1:8000/patient/${encodeURIComponent(patientName)}/chart-data`);
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status}`);
+                }
+
+                const data = await res.json();
+
+                if (data.success && data.chart_data) {
+                    const testCount = Object.keys(data.chart_data).length;
+                    statusBadge.textContent = `${testCount} tests loaded`;
+                    statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-green-50 text-green-700';
+
+                    document.getElementById('patientSubtitle').textContent =
+                        `${data.raw_tests?.length || 0} lab entries across ${testCount} test types`;
+
+                    renderCharts(data.chart_data);
+                    renderTimeline(data.raw_tests);
+                } else {
+                    throw new Error('No data in response');
+                }
+            } catch (e) {
+                console.error('Error loading data:', e);
+                statusBadge.textContent = 'Failed to load';
+                statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-50 text-red-600';
+                document.getElementById('chartsContainer').innerHTML =
+                    `<div class="bg-white rounded-2xl p-8 border border-red-100 text-center">
+                        <span class="material-symbols-outlined text-3xl text-red-300 mb-2 block">error</span>
+                        <p class="text-red-500 font-semibold text-sm">Could not load chart data</p>
+                        <p class="text-slate-400 text-xs mt-1">Ensure backend is running at <code>http://127.0.0.1:8000</code></p>
+                        <p class="text-slate-400 text-xs mt-0.5">Error: ${e.message}</p>
+                    </div>`;
+                document.getElementById('timelineEntries').innerHTML =
+                    '<p class="pl-10 text-red-400 text-sm">Failed to load timeline.</p>';
+                document.getElementById('summaryPills').innerHTML = '';
+            }
+        }
+
+        loadData();
+    </script>
+</body>
+
+</html>

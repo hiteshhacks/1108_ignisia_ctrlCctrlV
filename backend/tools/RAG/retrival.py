@@ -9,7 +9,7 @@ from groq import Groq
 load_dotenv()
 
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
-MODEL_ID = "llama-3.3-70b-versatile" # upgraded model for complex medical generation
+MODEL_ID = "openai/gpt-oss-120b" # upgraded model for complex medical generation
 QDRANT_URL = os.getenv("QDRANT_URL","http://localhost:6366")
 COLLECTION_NAME = "ICU_RAG"
 
