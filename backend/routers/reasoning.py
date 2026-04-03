@@ -25,12 +25,21 @@ async def reason_medical_endpoint(request: ReasoningRequest):
         }
         
         medical_json_str = json.dumps(data_to_analyze, indent=2)
-        reasoning_result = reason_medical_data(medical_json_str)
+        
+        # 1. Ge initial JSON analysis from Agents
+        agent_insights_json = reason_medical_data(medical_json_str)
+        
+        # 2. Run the insights through the RAG pipeline to cite guidelines
+        from tools.RAG.retrival import medical_guideline_rag
+        final_rag_report = medical_guideline_rag(
+            patient_data=medical_json_str, 
+            medical_team_report=agent_insights_json
+        )
         
         return ReasoningResponse(
             success=True,
-            reasoning=reasoning_result,
-            message="Reasoning completed successfully"
+            reasoning=final_rag_report,
+            message="Reasoning completed successfully with RAG citations."
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error in reasoning: {str(e)}")
