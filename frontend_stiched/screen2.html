@@ -1,74 +1,178 @@
 <!DOCTYPE html>
-<html class="light" lang="en">
+<html lang="en">
 
 <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <title>Patient Analytics | Clinical Precision</title>
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    <title>Analytics | Clinical Precision</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
-    <script id="tailwind-config">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script>
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        "primary": "#004692",
-                        "on-primary": "#ffffff",
-                        "primary-container": "#d5e3ff",
-                        "surface": "#f7f9fb",
-                        "surface-container-lowest": "#ffffff",
-                        "on-surface": "#191c1e",
-                        "on-surface-variant": "#424752",
-                        "surface-container-low": "#f2f4f6",
-                        "outline-variant": "#c2c6d4",
-                        "error": "#ba1a1a"
+                        primary: "#1a56db",
+                        "primary-dark": "#1046b8",
+                        surface: "#f3f5f9",
+                        card: "#ffffff",
+                        "on-surface": "#111827",
+                        muted: "#6b7280",
+                        border: "#e5e7eb",
                     }
                 }
             }
         }
     </script>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
         body {
+            min-width: 1280px;
             font-family: 'Inter', sans-serif;
+            overflow-x: auto;
+        }
+
+        body {
+            background: #f3f5f9;
+            color: #111827;
         }
 
         .material-symbols-outlined {
             font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
         }
 
-        .chart-card {
-            transition: box-shadow 0.2s ease;
+        .fill-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
         }
 
-        .chart-card:hover {
-            box-shadow: 0 8px 30px rgba(0, 70, 146, 0.12);
+        /* Sidebar */
+        .sidebar {
+            width: 220px;
+            min-height: 100vh;
+            background: #fff;
+            border-right: 1px solid #e5e7eb;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 40;
         }
 
-        .timeline-dot {
-            z-index: 10;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.15s;
+            margin: 2px 8px;
         }
 
-        @keyframes pulse-blue {
+        .nav-item:hover {
+            background: #f0f4ff;
+            color: #1a56db;
+        }
 
-            0%,
+        .nav-item.active {
+            background: #eff4ff;
+            color: #1a56db;
+            font-weight: 600;
+        }
+
+        .nav-item .material-symbols-outlined {
+            font-size: 18px;
+        }
+
+        /* Cards */
+        .card {
+            background: #fff;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .card-blue {
+            background: linear-gradient(135deg, #1a56db 0%, #1046b8 100%);
+            border-radius: 16px;
+            border: none;
+            color: white;
+        }
+
+        /* Heatmap */
+        .heatmap-cell {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        .heat-0 {
+            background: #e9ecf5;
+        }
+
+        .heat-1 {
+            background: #93c5fd;
+        }
+
+        .heat-2 {
+            background: #3b82f6;
+        }
+
+        .heat-3 {
+            background: #1d4ed8;
+        }
+
+        .heat-4 {
+            background: #1e3a8a;
+        }
+
+        /* Loading skeleton */
+        @keyframes shimmer {
+            0% {
+                background-position: -600px 0
+            }
+
             100% {
-                opacity: 1
-            }
-
-            50% {
-                opacity: .5
+                background-position: 600px 0
             }
         }
 
-        .loading-pulse {
-            animation: pulse-blue 1.5s ease-in-out infinite;
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 600px;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
         }
 
-        /* Status pill colors */
+        /* Status pills */
+        .pill {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .pill-normal {
+            background: #dcfce7;
+            color: #166534;
+        }
+
         .pill-high {
             background: #fee2e2;
             color: #991b1b;
@@ -79,319 +183,674 @@
             color: #9a3412;
         }
 
-        .pill-normal {
-            background: #dcfce7;
-            color: #166534;
+        .pill-missing {
+            background: #f3f4f6;
+            color: #6b7280;
+        }
+
+        .pill-primary {
+            background: #eff4ff;
+            color: #1a56db;
+        }
+
+        /* Trend badge */
+        .trend-up {
+            color: #ef4444;
+        }
+
+        .trend-down {
+            color: #f97316;
+        }
+
+        .trend-ok {
+            color: #22c55e;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f3f4f6;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 3px;
         }
     </style>
 </head>
 
-<body class="bg-surface text-on-surface">
-    <!-- Sidebar -->
-    <aside class="flex flex-col fixed left-0 top-0 z-40 bg-white border-r border-slate-100 h-screen w-64">
-        <div class="px-6 py-8 border-b border-slate-100">
-            <h1 class="text-xl font-black text-primary tracking-tight">Clinical Precision</h1>
-            <p class="text-[10px] text-slate-400 mt-0.5 uppercase tracking-wider font-semibold">Medical AI Platform</p>
+<body>
+
+    <!-- ═══════════════════════ SIDEBAR ═══════════════════════ -->
+    <aside class="sidebar">
+        <div style="padding: 24px 16px 16px; border-bottom: 1px solid #e5e7eb;">
+            <div style="font-size: 1.1rem; font-weight: 800; color: #1a56db; letter-spacing: -0.02em;">Clinical
+                Precision</div>
+            <div
+                style="font-size: 10px; color: #9ca3af; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; margin-top: 2px;">
+                Medical AI Platform</div>
         </div>
-        <nav class="flex-1 px-4 py-6 space-y-1">
-            <a href="screen1.html"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-on-surface-variant hover:bg-surface-container-low text-sm font-medium transition-colors">
-                <span class="material-symbols-outlined text-base">upload_file</span>Upload Report
+        <nav style="flex: 1; padding: 12px 0;">
+            <a href="screen1.html" class="nav-item">
+                <span class="material-symbols-outlined">upload_file</span> Upload
             </a>
-            <a href="#"
-                class="flex items-center gap-3 px-3 py-2.5 rounded-lg bg-primary/8 text-primary text-sm font-semibold transition-colors">
-                <span class="material-symbols-outlined text-base"
-                    style="font-variation-settings:'FILL' 1">analytics</span>Analytics
-            </a>
+            <div class="nav-item">
+                <span class="material-symbols-outlined">group</span> Patient List
+            </div>
+            <div class="nav-item active">
+                <span class="material-symbols-outlined fill-icon">dashboard</span> Dashboard
+            </div>
+            <div class="nav-item" id="reportsBtn">
+                <span class="material-symbols-outlined">description</span> Reports
+            </div>
         </nav>
+        <div style="padding: 16px; border-top: 1px solid #e5e7eb; display: flex; align-items: center; gap: 10px;">
+            <div
+                style="width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#1a56db,#7c3aed); display: flex; align-items: center; justify-content: center; color: white; font-weight: 700; font-size: 14px; flex-shrink: 0;">
+                DR</div>
+            <div>
+                <div style="font-size: 12px; font-weight: 700; color: #111827;">Dr. Sarah Mitchell</div>
+                <div style="font-size: 10px; color: #6b7280;">Senior Clinician</div>
+            </div>
+        </div>
     </aside>
 
-    <!-- Top Header -->
+    <!-- ═══════════════════════ TOP HEADER ═══════════════════════ -->
     <header
-        class="fixed top-0 right-0 left-64 h-16 flex justify-between items-center px-8 z-30 bg-white/90 backdrop-blur-md border-b border-slate-100">
-        <div class="flex items-center gap-2 text-on-surface-variant text-sm font-medium">
-            <span class="text-slate-400">Patients</span>
-            <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
-            <span class="text-primary font-bold" id="headerPatientName">Loading...</span>
-            <span class="material-symbols-outlined text-sm text-slate-300">chevron_right</span>
-            <span class="text-on-surface-variant">Analytics</span>
+        style="position: fixed; top: 0; left: 220px; right: 0; height: 60px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border-bottom: 1px solid #e5e7eb; display: flex; align-items: center; justify-content: space-between; padding: 0 28px; z-index: 30;">
+        <div
+            style="display: flex; align-items: center; gap: 8px; font-size: 0.875rem; color: #6b7280; font-weight: 500;">
+            <span>Patients</span>
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #d1d5db;">chevron_right</span>
+            <span id="breadcrumbName" style="color: #1a56db; font-weight: 700;">Loading...</span>
+            <span class="material-symbols-outlined" style="font-size: 16px; color: #d1d5db;">chevron_right</span>
+            <span>Analytics</span>
         </div>
-        <div id="statusBadge"
-            class="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-700">
-            Loading data...
+        <div style="display: flex; align-items: center; gap: 12px;">
+            <div
+                style="display: flex; align-items: center; gap: 8px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 7px 14px; width: 220px;">
+                <span class="material-symbols-outlined" style="font-size: 16px; color: #9ca3af;">search</span>
+                <input placeholder="Search patient data..."
+                    style="border: none; background: none; font-size: 13px; outline: none; width: 100%; color: #6b7280;" />
+            </div>
+            <button
+                style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined" style="font-size: 18px; color: #6b7280;">notifications</span>
+            </button>
+            <button
+                style="width: 36px; height: 36px; border-radius: 9px; border: 1px solid #e5e7eb; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
+                <span class="material-symbols-outlined" style="font-size: 18px; color: #6b7280;">settings</span>
+            </button>
         </div>
     </header>
 
-    <!-- Main Content -->
-    <main class="ml-64 pt-24 pb-16 px-8 min-h-screen">
+    <!-- ═══════════════════════ MAIN CONTENT ═══════════════════════ -->
+    <main style="margin-left: 220px; padding: 80px 28px 40px;">
 
-        <!-- Patient Overview Card -->
-        <section class="bg-white rounded-2xl p-8 shadow-sm border border-slate-100 mb-8 relative overflow-hidden">
-            <div class="absolute inset-0 bg-gradient-to-br from-primary/3 to-transparent pointer-events-none"></div>
-            <div class="relative flex items-start justify-between">
-                <div>
-                    <p class="text-[10px] font-bold uppercase tracking-widest text-primary mb-2">Patient Report</p>
-                    <h2 class="text-3xl font-black text-on-surface tracking-tight" id="mainPatientName">Loading...</h2>
-                    <p class="text-on-surface-variant mt-1 text-sm" id="patientSubtitle">Fetching medical records...</p>
+        <!-- ── Row 1: Patient Card + Stat Card ── -->
+        <div style="display: grid; grid-template-columns: 1fr 280px; gap: 20px; margin-bottom: 20px;">
+
+            <!-- Patient overview -->
+            <div class="card" style="padding: 24px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="width: 80px; height: 80px; border-radius: 16px; background: linear-gradient(135deg,#1a56db20,#7c3aed20); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 32px; font-weight: 800; color: #1a56db;"
+                        id="avatarInitials">?</div>
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 4px;">
+                            <h2 id="patientNameMain"
+                                style="font-size: 1.5rem; font-weight: 800; color: #111827; letter-spacing: -0.02em;">
+                                Loading...</h2>
+                            <span class="pill pill-primary">PRIMARY PATIENT</span>
+                        </div>
+                        <div style="display: flex; gap: 24px; margin-top: 8px;" id="patientMeta">
+                            <div>
+                                <div
+                                    style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">
+                                    Lab</div>
+                                <div style="font-size: 13px; font-weight: 600; color: #111827;" id="metaLab">—</div>
+                            </div>
+                            <div>
+                                <div
+                                    style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">
+                                    Doctor</div>
+                                <div style="font-size: 13px; font-weight: 600; color: #111827;" id="metaDoctor">—</div>
+                            </div>
+                            <div>
+                                <div
+                                    style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">
+                                    Tests</div>
+                                <div style="font-size: 13px; font-weight: 600; color: #111827;" id="metaTests">—</div>
+                            </div>
+                            <div>
+                                <div
+                                    style="font-size: 10px; color: #9ca3af; text-transform: uppercase; font-weight: 600; letter-spacing: 0.05em;">
+                                    Dates</div>
+                                <div style="font-size: 13px; font-weight: 600; color: #111827;" id="metaDates">—</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 10px; flex-shrink: 0;">
+                        <button onclick="document.getElementById('timelineSection').scrollIntoView({behavior:'smooth'})"
+                            style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; border: 1.5px solid #e5e7eb; background: #fff; font-size: 13px; font-weight: 600; cursor: pointer; color: #111827; transition: all 0.15s;"
+                            onmouseover="this.style.borderColor='#1a56db';this.style.color='#1a56db'"
+                            onmouseout="this.style.borderColor='#e5e7eb';this.style.color='#111827'">
+                            <span class="material-symbols-outlined" style="font-size: 16px;">history</span>View Timeline
+                        </button>
+                        <button id="generateBtn"
+                            style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; border-radius: 10px; border: none; background: linear-gradient(135deg,#1a56db,#1046b8); font-size: 13px; font-weight: 600; cursor: pointer; color: white; box-shadow: 0 4px 14px rgba(26,86,219,0.3); transition: all 0.15s;"
+                            onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                            <span class="material-symbols-outlined fill-icon"
+                                style="font-size: 16px;">auto_awesome</span>Generate AI Report
+                        </button>
+                    </div>
                 </div>
-                <button id="generateBtn"
-                    class="bg-primary text-white px-6 py-3 rounded-xl font-bold text-sm flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-lg shadow-primary/20">
-                    <span class="material-symbols-outlined text-lg"
-                        style="font-variation-settings:'FILL' 1">auto_awesome</span>
-                    Generate AI Report
-                </button>
             </div>
-            <!-- Summary stat pills (filled after data loads) -->
-            <div class="flex gap-3 mt-6 flex-wrap" id="summaryPills">
-                <span class="loading-pulse inline-block w-24 h-6 rounded-full bg-slate-100"></span>
-                <span class="loading-pulse inline-block w-24 h-6 rounded-full bg-slate-100"></span>
-                <span class="loading-pulse inline-block w-24 h-6 rounded-full bg-slate-100"></span>
-            </div>
-        </section>
 
-        <!-- Analytics Grid: Charts + Timeline -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            <!-- Left: Charts area (dynamic) -->
-            <div class="lg:col-span-2 space-y-6" id="chartsContainer">
-                <!-- Loading skeleton -->
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                    <div class="loading-pulse h-5 w-40 bg-slate-100 rounded mb-6"></div>
-                    <div class="loading-pulse h-48 bg-slate-50 rounded-xl"></div>
+            <!-- Latest Test Stat Card -->
+            <div class="card-blue" style="padding: 24px; position: relative; overflow: hidden;">
+                <div
+                    style="position: absolute; top: -20px; right: -20px; width: 120px; height: 120px; background: rgba(255,255,255,0.07); border-radius: 50%;">
                 </div>
-                <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
-                    <div class="loading-pulse h-5 w-56 bg-slate-100 rounded mb-6"></div>
-                    <div class="loading-pulse h-48 bg-slate-50 rounded-xl"></div>
+                <div
+                    style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                    <span class="material-symbols-outlined fill-icon"
+                        style="font-size: 28px; opacity: 0.9;">monitor_heart</span>
+                    <span id="statBadge" class="pill"
+                        style="background: rgba(255,255,255,0.18); color: white;">LATEST</span>
                 </div>
-            </div>
-
-            <!-- Right: Timeline -->
-            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 h-fit">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-bold text-on-surface">Lab Timeline</h3>
-                    <span class="material-symbols-outlined text-slate-400 text-base">history</span>
+                <div style="font-size: 12px; opacity: 0.7; margin-bottom: 4px;" id="statLabel">Most Recent Test</div>
+                <div style="font-size: 2rem; font-weight: 800; line-height: 1; margin-bottom: 2px;" id="statValue">—
                 </div>
-                <div id="timelineEntries"
-                    class="space-y-0 relative before:absolute before:left-4 before:top-2 before:bottom-2 before:w-px before:bg-slate-100">
-                    <div class="text-slate-400 text-sm loading-pulse pl-10">Loading entries...</div>
+                <div style="font-size: 11px; opacity: 0.6;" id="statUnit"></div>
+                <div style="display: flex; align-items: flex-end; gap: 3px; margin-top: 16px; height: 36px;"
+                    id="statMiniBar">
+                    <!-- mini bars injected by JS -->
                 </div>
             </div>
-
         </div>
+
+        <!-- ── Row 2: Multi-Series Trend Chart ── -->
+        <div class="card" style="padding: 24px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px;">
+                <div>
+                    <div style="font-size: 1rem; font-weight: 700; color: #111827;">Vital Multi-Series Trend</div>
+                    <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">All test values plotted over time
+                    </div>
+                </div>
+                <div id="trendLegend"
+                    style="display: flex; flex-wrap: wrap; gap: 12px; max-width: 600px; justify-content: flex-end;">
+                </div>
+            </div>
+            <div style="height: 260px; position: relative;">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- ── Row 3: Distribution Donut + Heatmap ── -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+
+            <!-- Donut: Health Profile Distribution -->
+            <div class="card" style="padding: 24px;">
+                <div style="font-size: 1rem; font-weight: 700; color: #111827; margin-bottom: 4px;">Health Profile
+                    Distribution</div>
+                <div style="font-size: 12px; color: #6b7280; margin-bottom: 20px;">Status breakdown across all tests
+                </div>
+                <div style="display: flex; align-items: center; gap: 28px;">
+                    <div style="position: relative; width: 140px; height: 140px; flex-shrink: 0;">
+                        <canvas id="donutChart" width="140" height="140"></canvas>
+                        <div
+                            style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                            <div id="donutCenter"
+                                style="font-size: 1.6rem; font-weight: 800; color: #1a56db; line-height: 1;">—</div>
+                            <div style="font-size: 10px; color: #9ca3af; font-weight: 600;">SCORE</div>
+                        </div>
+                    </div>
+                    <div id="donutLegend" style="flex: 1; display: flex; flex-direction: column; gap: 10px;"></div>
+                </div>
+            </div>
+
+            <!-- Heatmap: Monitoring Consistency -->
+            <div class="card" style="padding: 24px;">
+                <div
+                    style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px;">
+                    <div>
+                        <div style="font-size: 1rem; font-weight: 700; color: #111827;">Monitoring Consistency</div>
+                        <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">Lab activity calendar</div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 10px; color: #6b7280;">
+                        <span>Low</span>
+                        <div class="heatmap-cell heat-0"></div>
+                        <div class="heatmap-cell heat-1"></div>
+                        <div class="heatmap-cell heat-2"></div>
+                        <div class="heatmap-cell heat-3"></div>
+                        <div class="heatmap-cell heat-4"></div>
+                        <span>High</span>
+                    </div>
+                </div>
+                <div style="display: flex; gap: 3px;" id="heatmapContainer">
+                    <div style="color: #9ca3af; font-size: 12px; padding-top: 20px;">Loading...</div>
+                </div>
+                <div id="heatmapDayLabels"
+                    style="display: flex; gap: 3px; margin-top: 4px; padding-left: 24px; font-size: 9px; color: #9ca3af; font-weight: 600;">
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Row 4: Per-Test Cards + Past Entries ── -->
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px;">
+
+            <!-- Per-Test value cards -->
+            <div>
+                <div style="font-size: 1rem; font-weight: 700; color: #111827; margin-bottom: 14px;">Individual Lab
+                    Markers</div>
+                <div id="testCardsGrid"
+                    style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px;">
+                </div>
+            </div>
+
+            <!-- Past Entries Timeline -->
+            <div id="timelineSection">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;">
+                    <div style="font-size: 1rem; font-weight: 700; color: #111827;">Past Entries</div>
+                    <span style="font-size: 12px; color: #1a56db; font-weight: 600; cursor: pointer;">See All</span>
+                </div>
+                <div id="timelineContainer" style="display: flex; flex-direction: column; gap: 0;"></div>
+            </div>
+        </div>
+
     </main>
+
+    <!-- FAB -->
+    <button id="generateFab"
+        style="position: fixed; bottom: 28px; right: 28px; width: 52px; height: 52px; border-radius: 50%; background: linear-gradient(135deg,#1a56db,#7c3aed); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 24px rgba(26,86,219,0.4); z-index: 50; transition: transform 0.15s;"
+        onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+        <span class="material-symbols-outlined fill-icon" style="color: white; font-size: 22px;">auto_awesome</span>
+    </button>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const patientName = urlParams.get('patient_name') || 'Unknown';
 
-        document.getElementById('headerPatientName').textContent = patientName;
-        document.getElementById('mainPatientName').textContent = patientName;
+        document.getElementById('breadcrumbName').textContent = patientName;
+        document.getElementById('patientNameMain').textContent = patientName;
+        document.getElementById('avatarInitials').textContent = patientName.slice(0, 2).toUpperCase();
 
-        document.getElementById('generateBtn').addEventListener('click', () => {
-            window.location.href = `screen3.html?patient_name=${encodeURIComponent(patientName)}`;
-        });
+        const navFn = () => window.location.href = `screen3.html?patient_name=${encodeURIComponent(patientName)}`;
+        document.getElementById('generateBtn').addEventListener('click', navFn);
+        document.getElementById('generateFab').addEventListener('click', navFn);
+        document.getElementById('reportsBtn').addEventListener('click', navFn);
 
-        // Sanitise test name so it works as a DOM id
-        function sanitiseId(name) {
-            return 'chart-' + name.replace(/[^a-zA-Z0-9]/g, '_');
-        }
+        // ─── Palette ────────────────────────────────────────────────
+        const PALETTE = [
+            '#1a56db', '#7c3aed', '#059669', '#dc2626', '#d97706',
+            '#0891b2', '#be185d', '#15803d', '#c2410c', '#6d28d9'
+        ];
 
+        // ─── Range helpers ───────────────────────────────────────────
         function getRangeStatus(value, refRange) {
-            if (!refRange || value === 0 || isNaN(value)) return 'normal';
+            if (!refRange || value === null || isNaN(value)) return 'missing';
             const lt = refRange.match(/^<\s*([\d.]+)/);
             if (lt) return value >= parseFloat(lt[1]) ? 'high' : 'normal';
             const gt = refRange.match(/^>\s*([\d.]+)/);
             if (gt) return value <= parseFloat(gt[1]) ? 'low' : 'normal';
             const rng = refRange.match(/([\d.]+)\s*[-–]\s*([\d.]+)/);
-            if (rng) { const lo = parseFloat(rng[1]), hi = parseFloat(rng[2]); return value < lo ? 'low' : value > hi ? 'high' : 'normal'; }
+            if (rng) {
+                const lo = parseFloat(rng[1]), hi = parseFloat(rng[2]);
+                return value < lo ? 'low' : value > hi ? 'high' : 'normal';
+            }
             return 'normal';
         }
 
-        function renderCharts(chartData) {
-            const container = document.getElementById('chartsContainer');
-            container.innerHTML = '';
+        // ─── Stat (top-right blue card) ─────────────────────────────
+        function renderStat(chartData) {
+            // Pick first test with real values
+            const entries = Object.entries(chartData);
+            const entry = entries.find(([, v]) => v.data.some(d => d.value > 0)) || entries[0];
+            if (!entry) return;
+            const [name, info] = entry;
+            const vals = info.data.map(d => d.value).filter(v => v > 0);
+            if (!vals.length) return;
+            const last = vals[vals.length - 1];
+            const status = getRangeStatus(last, info.reference_range);
+            const badgeMap = { high: 'ELEVATED', low: 'BELOW REF', normal: 'STABLE', missing: 'N/A' };
+            document.getElementById('statLabel').textContent = name.length > 24 ? name.slice(0, 24) + '…' : name;
+            document.getElementById('statValue').textContent = last;
+            document.getElementById('statUnit').textContent = info.unit;
+            document.getElementById('statBadge').textContent = badgeMap[status];
 
-            const tests = Object.entries(chartData);
-            if (tests.length === 0) {
-                container.innerHTML = '<div class="bg-white rounded-2xl p-8 text-center text-slate-400">No chart data available for this patient.</div>';
-                return;
-            }
-
-            // Build summary pills
-            let high = 0, low = 0, normal = 0;
-
-            tests.forEach(([testName, testInfo]) => {
-                if (!testInfo.data || testInfo.data.length === 0) return;
-
-                // Sort dates
-                const sorted = [...testInfo.data].sort((a, b) => {
-                    const da = a.date.split('/').reverse().join('-');
-                    const db = b.date.split('/').reverse().join('-');
-                    return da.localeCompare(db);
-                });
-                const labels = sorted.map(d => d.date);
-                const values = sorted.map(d => typeof d.value === 'number' ? d.value : parseFloat(d.value) || 0);
-
-                // Latest value for status
-                const latestVal = values[values.length - 1];
-                const status = getRangeStatus(latestVal, testInfo.reference_range);
-                if (status === 'high') high++;
-                else if (status === 'low') low++;
-                else normal++;
-
-                const chartId = sanitiseId(testName);
-                const statusColor = status === 'high' ? '#ef4444' : status === 'low' ? '#f97316' : '#004692';
-                const statusLabel = status === 'high' ? '▲ ELEVATED' : status === 'low' ? '▼ BELOW RANGE' : '● STABLE';
-                const statusClass = status === 'high' ? 'pill-high' : status === 'low' ? 'pill-low' : 'pill-normal';
-
-                const card = document.createElement('div');
-                card.className = 'chart-card bg-white rounded-2xl p-6 shadow-sm border border-slate-100';
-                card.innerHTML = `
-                    <div class="flex items-start justify-between mb-4">
-                        <div>
-                            <h3 class="text-base font-bold text-on-surface leading-tight">${testName}</h3>
-                            <p class="text-xs text-slate-400 mt-0.5">Unit: ${testInfo.unit || '—'} &nbsp;|&nbsp; Ref: ${testInfo.reference_range || '—'}</p>
-                        </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full ${statusClass}">${statusLabel}</span>
-                    </div>
-                    <canvas id="${chartId}" height="100"></canvas>`;
-                container.appendChild(card);
-
-                new Chart(document.getElementById(chartId).getContext('2d'), {
-                    type: 'line',
-                    data: {
-                        labels,
-                        datasets: [{
-                            label: testName,
-                            data: values,
-                            borderColor: statusColor,
-                            backgroundColor: statusColor + '18',
-                            tension: 0.4,
-                            fill: true,
-                            pointBackgroundColor: statusColor,
-                            pointRadius: 5,
-                            pointHoverRadius: 7,
-                            borderWidth: 2.5
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                callbacks: {
-                                    label: ctx => `${ctx.parsed.y} ${testInfo.unit || ''}`
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                grid: { color: '#f0f2f5' },
-                                ticks: { font: { size: 11 } }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { font: { size: 11 } }
-                            }
-                        }
-                    }
-                });
-            });
-
-            // Update summary pills
-            document.getElementById('summaryPills').innerHTML = `
-                <span class="pill-high px-3 py-1 rounded-full text-[11px] font-bold">${high} Elevated</span>
-                <span class="pill-low px-3 py-1 rounded-full text-[11px] font-bold">${low} Below Range</span>
-                <span class="pill-normal px-3 py-1 rounded-full text-[11px] font-bold">${normal} Normal</span>
-                <span class="px-3 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-600">${tests.length} Total Tests</span>`;
+            // Mini bar chart
+            const maxV = Math.max(...vals, 1);
+            const barEl = document.getElementById('statMiniBar');
+            barEl.innerHTML = vals.slice(-10).map(v => {
+                const h = Math.max(Math.round((v / maxV) * 36), 4);
+                return `<div style="flex:1;background:rgba(255,255,255,0.4);border-radius:3px;height:${h}px;align-self:flex-end;"></div>`;
+            }).join('');
         }
 
-        function renderTimeline(rawTests) {
-            const timeline = document.getElementById('timelineEntries');
-            if (!rawTests || rawTests.length === 0) {
-                timeline.innerHTML = '<p class="pl-10 text-slate-400 text-sm">No timeline entries found.</p>';
-                return;
-            }
-            timeline.innerHTML = '';
+        // ─── Multi-Series Trend Chart ────────────────────────────────
+        function renderTrendChart(chartData) {
+            const canvas = document.getElementById('trendChart');
+            const legend = document.getElementById('trendLegend');
 
-            // Group by date — deduplicate test names per date
+            // Build union of all dates across all tests
+            const dateSet = new Set();
+            Object.values(chartData).forEach(info => info.data.forEach(d => dateSet.add(d.date)));
+            const allDates = [...dateSet].sort((a, b) => {
+                const pa = a.split('/').reverse().join('-'), pb = b.split('/').reverse().join('-');
+                return pa.localeCompare(pb);
+            });
+            // Remove duplicate adjacent dates
+            const uniqueDates = [...new Set(allDates)];
+
+            const datasets = Object.entries(chartData).map(([name, info], i) => {
+                const color = PALETTE[i % PALETTE.length];
+                // Map value per date
+                const byDate = {};
+                info.data.forEach(d => { if (d.value > 0) byDate[d.date] = d.value; });
+                const data = uniqueDates.map(d => byDate[d] ?? null);
+                return {
+                    label: name,
+                    data,
+                    borderColor: color,
+                    backgroundColor: color + '18',
+                    borderWidth: 2,
+                    tension: 0.35,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    pointBackgroundColor: color,
+                    spanGaps: true
+                };
+            });
+
+            new Chart(canvas.getContext('2d'), {
+                type: 'line',
+                data: { labels: uniqueDates, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.parsed.y}` } }
+                    },
+                    scales: {
+                        y: { grid: { color: '#f3f4f6' }, ticks: { font: { size: 11 } } },
+                        x: { grid: { display: false }, ticks: { font: { size: 11 } } }
+                    }
+                }
+            });
+
+            // Legend
+            legend.innerHTML = Object.keys(chartData).map((name, i) => {
+                const color = PALETTE[i % PALETTE.length];
+                const short = name.length > 20 ? name.slice(0, 20) + '…' : name;
+                return `<div style="display:flex;align-items:center;gap:5px;font-size:11px;color:#6b7280;font-weight:500;" title="${name}">
+            <div style="width:10px;height:10px;border-radius:50%;background:${color};flex-shrink:0;"></div>${short}
+        </div>`;
+            }).join('');
+        }
+
+        // ─── Donut Chart ─────────────────────────────────────────────
+        function renderDonut(rawTests) {
+            const seen = {};
+            rawTests.forEach(t => { if (t.test_value) seen[t.test_name] = t; });
+            const unique = Object.values(seen);
+            let normal = 0, high = 0, low = 0, missing = 0;
+            unique.forEach(t => {
+                const s = getRangeStatus(parseFloat(t.test_value) || 0, t.reference_range);
+                if (s === 'normal') normal++;
+                else if (s === 'high') high++;
+                else if (s === 'low') low++;
+                else missing++;
+            });
+            const total = unique.length || 1;
+            const score = Math.round((normal / total) * 100);
+            document.getElementById('donutCenter').textContent = score + '%';
+
+            const data = [normal, high, low, missing].filter((_, i) => ([normal, high, low, missing][i] > 0));
+            const labels = ['Normal', 'Elevated', 'Below Range', 'Missing'].filter((_, i) => ([normal, high, low, missing][i] > 0));
+            const colors = ['#22c55e', '#ef4444', '#f97316', '#9ca3af'];
+            const usedColors = colors.filter((_, i) => ([normal, high, low, missing][i] > 0));
+
+            new Chart(document.getElementById('donutChart').getContext('2d'), {
+                type: 'doughnut',
+                data: { labels, datasets: [{ data, backgroundColor: usedColors, borderWidth: 0, hoverOffset: 4 }] },
+                options: {
+                    responsive: false,
+                    cutout: '72%',
+                    plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => `${ctx.label}: ${ctx.parsed} tests` } } }
+                }
+            });
+
+            // Legend
+            const legend = document.getElementById('donutLegend');
+            const counts = [normal, high, low, missing];
+            const lLabels = ['Vital Stability', 'Elevated Markers', 'Below Reference', 'No Data'];
+            const lColors = ['#22c55e', '#ef4444', '#f97316', '#9ca3af'];
+            legend.innerHTML = lLabels.map((l, i) => {
+                if (counts[i] === 0) return '';
+                const pct = Math.round((counts[i] / total) * 100);
+                return `<div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:8px;height:8px;border-radius:50%;background:${lColors[i]};flex-shrink:0;"></div>
+            <div style="flex:1;font-size:12px;color:#6b7280;">${l}</div>
+            <div style="font-size:13px;font-weight:700;color:#111827;">${pct}%</div>
+        </div>`;
+            }).join('');
+        }
+
+        // ─── Calendar Heatmap ────────────────────────────────────────
+        function renderHeatmap(rawTests) {
+            const container = document.getElementById('heatmapContainer');
+
+            // Count tests per date
+            const dateCounts = {};
+            rawTests.forEach(t => {
+                const d = t.test_date;
+                if (d) dateCounts[d] = (dateCounts[d] || 0) + 1;
+            });
+
+            // Find date range
+            const dates = Object.keys(dateCounts);
+            if (!dates.length) { container.innerHTML = '<div style="color:#9ca3af;font-size:12px;">No data</div>'; return; }
+
+            // Parse DD/MM/YYYY dates
+            function parseDate(s) {
+                const [d, m, y] = s.split('/');
+                return new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+            }
+
+            const parsedDates = dates.map(d => ({ raw: d, dt: parseDate(d) })).sort((a, b) => a.dt - b.dt);
+            const minDate = parsedDates[0].dt;
+            const maxDate = parsedDates[parsedDates.length - 1].dt;
+
+            // Build 7-row (days of week) column grid
+            // Start from Monday of the week of minDate
+            const startDay = new Date(minDate);
+            startDay.setDate(startDay.getDate() - ((startDay.getDay() + 6) % 7)); // Go to Monday
+
+            const endDay = new Date(maxDate);
+            endDay.setDate(endDay.getDate() + (6 - ((endDay.getDay() + 6) % 7))); // Go to Sunday
+
+            // Build lookup map: format yyyy-mm-dd → count
+            const lookup = {};
+            Object.entries(dateCounts).forEach(([raw, cnt]) => {
+                const dt = parseDate(raw);
+                const key = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+                lookup[key] = cnt;
+            });
+
+            // Build columns (each column = 1 week, 7 cells)
+            const maxCount = Math.max(...Object.values(dateCounts), 1);
+            const columns = [];
+            let cur = new Date(startDay);
+            while (cur <= endDay) {
+                const col = [];
+                for (let d = 0; d < 7; d++) {
+                    const key = `${cur.getFullYear()}-${String(cur.getMonth() + 1).padStart(2, '0')}-${String(cur.getDate()).padStart(2, '0')}`;
+                    const cnt = lookup[key] || 0;
+                    const intensity = cnt === 0 ? 0 : Math.ceil((cnt / maxCount) * 4);
+                    col.push({ key, cnt, intensity, date: new Date(cur) });
+                    cur.setDate(cur.getDate() + 1);
+                }
+                columns.push(col);
+            }
+
+            // Day labels on left
+            const DAY_SHORT = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+
+            // Wrap with day labels on left
+            container.innerHTML = `
+        <div style="display:flex;flex-direction:column;gap:3px;padding-top:20px;margin-right:4px;">
+            ${DAY_SHORT.map(d => `<div style="height:12px;font-size:9px;color:#9ca3af;font-weight:600;line-height:12px;">${d}</div>`).join('')}
+        </div>
+        <div style="display:flex;gap:3px;overflow-x:auto;padding-bottom:4px;">
+        ${columns.map((col, ci) => {
+                // Month label on top of first column of a new month
+                const firstDay = col[0].date;
+                const showMonth = ci === 0 || col[0].date.getMonth() !== columns[ci - 1]?.[0]?.date?.getMonth();
+                const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const monthLabel = showMonth ? months[firstDay.getMonth()] : '';
+                return `<div style="display:flex;flex-direction:column;gap:3px;">
+                <div style="font-size:9px;color:#9ca3af;font-weight:600;height:16px;line-height:16px;">${monthLabel}</div>
+                ${col.map(cell => `<div class="heatmap-cell heat-${cell.intensity}" title="${cell.key}: ${cell.cnt} test${cell.cnt !== 1 ? 's' : ''}"></div>`).join('')}
+            </div>`;
+            }).join('')}
+        </div>`;
+        }
+
+        // ─── Per-Test Cards Grid ─────────────────────────────────────
+        function renderTestCards(chartData) {
+            const grid = document.getElementById('testCardsGrid');
+            const entries = Object.entries(chartData);
+            if (!entries.length) { grid.innerHTML = '<div style="color:#9ca3af;font-size:13px;">No data</div>'; return; }
+
+            grid.innerHTML = entries.map(([name, info], i) => {
+                const vals = info.data.map(d => d.value).filter(v => v > 0);
+                const latest = vals.length ? vals[vals.length - 1] : null;
+                const status = latest !== null ? getRangeStatus(latest, info.reference_range) : 'missing';
+                const color = PALETTE[i % PALETTE.length];
+                const pillClass = `pill-${status}`;
+                const statusLabel = status === 'normal' ? 'NORMAL' : status === 'high' ? 'HIGH' : status === 'low' ? 'LOW' : 'MISSING';
+
+                const spark = vals.slice(-6);
+                const maxSpark = Math.max(...spark, 1);
+                const sparkHtml = spark.map(v => {
+                    const h = Math.max(Math.round((v / maxSpark) * 28), 3);
+                    return `<div style="flex:1;background:${color};border-radius:2px;height:${h}px;align-self:flex-end;opacity:0.7;"></div>`;
+                }).join('');
+
+                return `<div class="card" style="padding: 18px; transition: transform 0.15s, box-shadow 0.15s;" onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 8px 24px rgba(0,0,0,0.08)'" onmouseout="this.style.transform='';this.style.boxShadow=''">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+                <div style="width:32px;height:32px;border-radius:8px;background:${color}18;display:flex;align-items:center;justify-content:center;">
+                    <span class="material-symbols-outlined" style="font-size:16px;color:${color}">science</span>
+                </div>
+                <span class="pill ${pillClass}">${statusLabel}</span>
+            </div>
+            <div style="font-size:11px;color:#6b7280;font-weight:500;margin-bottom:4px;line-height:1.3;">${name}</div>
+            <div style="font-size:1.4rem;font-weight:800;color:#111827;line-height:1;">${latest ?? '—'} <span style="font-size:11px;font-weight:400;color:#9ca3af;">${info.unit || ''}</span></div>
+            <div style="font-size:10px;color:#9ca3af;margin-top:2px;">Ref: ${info.reference_range || '—'}</div>
+            <div style="display:flex;gap:2px;margin-top:12px;height:28px;align-items:flex-end;">${sparkHtml || '<div style="color:#e5e7eb;font-size:10px;">no values</div>'}</div>
+        </div>`;
+            }).join('');
+        }
+
+        // ─── Past Entries Timeline ────────────────────────────────────
+        function renderTimeline(rawTests) {
+            const container = document.getElementById('timelineContainer');
+
+            // Group by date, deduplicate
             const byDate = {};
             rawTests.forEach(t => {
                 const d = t.test_date || 'Unknown';
                 if (!byDate[d]) byDate[d] = {};
-                // Keep latest value if duplicate
                 byDate[d][t.test_name] = t;
             });
 
-            Object.keys(byDate)
-                .sort((a, b) => {
-                    const pa = a.split('/').reverse().join('-');
-                    const pb = b.split('/').reverse().join('-');
-                    return pb.localeCompare(pa);
-                })
-                .forEach((date, idx) => {
-                    const tests = Object.values(byDate[date]);
-                    const entry = document.createElement('div');
-                    entry.className = 'relative pl-10 pb-7';
-                    const testsHtml = tests.map(t => {
-                        const val = t.test_value || '—';
-                        const status = getRangeStatus(parseFloat(val) || 0, t.reference_range);
-                        const dot = status === 'high' ? '🔴' : status === 'low' ? '🟠' : '🟢';
-                        return `<span class="inline-block text-[10px] ${status === 'high' ? 'text-red-600' : status === 'low' ? 'text-orange-500' : 'text-green-700'} font-semibold mr-1">${dot} ${t.test_name}: <strong>${val} ${t.unit || ''}</strong></span>`;
-                    }).join('<br>');
+            const sortedDates = Object.keys(byDate).sort((a, b) => {
+                const pa = a.split('/').reverse().join('-'), pb = b.split('/').reverse().join('-');
+                return pb.localeCompare(pa);
+            });
 
-                    entry.innerHTML = `
-                        <div class="timeline-dot absolute left-0 top-1 w-8 h-8 rounded-full bg-white border-2 border-primary flex items-center justify-center shadow-sm">
-                            <span class="material-symbols-outlined text-primary" style="font-size:14px">lab_research</span>
-                        </div>
-                        <div class="bg-surface-container-low rounded-xl p-4">
-                            <span class="text-[10px] font-bold text-primary uppercase tracking-wider">${date}</span>
-                            <h4 class="text-sm font-bold text-on-surface mt-1 mb-2">Lab Results &nbsp;<span class="text-[10px] text-slate-400 font-normal">(${tests.length} test${tests.length > 1 ? 's' : ''})</span></h4>
-                            <div class="text-xs leading-relaxed space-y-0.5">${testsHtml}</div>
-                        </div>`;
-                    timeline.appendChild(entry);
-                });
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            function fmtDate(raw) {
+                const [d, m, y] = raw.split('/');
+                return `${months[parseInt(m) - 1].toUpperCase()} ${d}, ${y}`;
+            }
+
+            container.innerHTML = sortedDates.slice(0, 8).map((date, idx) => {
+                const tests = Object.values(byDate[date]);
+                const isLast = idx === Math.min(7, sortedDates.length - 1);
+                const tags = [...new Set(tests.map(t => {
+                    const s = getRangeStatus(parseFloat(t.test_value) || 0, t.reference_range);
+                    return s;
+                }))];
+                const tagPills = tags.map(s => `<span class="pill pill-${s}" style="font-size:9px;">${s === 'normal' ? 'Lab Report' : s === 'high' ? 'Elevated' : 'Review'}</span>`).join(' ');
+
+                return `<div style="display:flex;gap:14px;padding-bottom:${isLast ? 0 : 20}px;position:relative;">
+            ${!isLast ? `<div style="position:absolute;left:15px;top:32px;bottom:0;width:1px;background:#e5e7eb;"></div>` : ''}
+            <div style="width:32px;height:32px;border-radius:50%;background:#eff4ff;border:2px solid #1a56db;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;">
+                <span class="material-symbols-outlined" style="font-size:14px;color:#1a56db;">lab_research</span>
+            </div>
+            <div class="card" style="flex:1;padding:14px;">
+                <div style="font-size:10px;color:#1a56db;font-weight:700;letter-spacing:0.05em;margin-bottom:4px;">${fmtDate(date)}</div>
+                <div style="font-size:13px;font-weight:700;color:#111827;margin-bottom:6px;">
+                    ${tests.length > 1 ? `${tests.length} Lab Tests` : tests[0]?.test_name?.split('(')[0]?.trim() || 'Lab Results'}
+                </div>
+                <div style="font-size:11px;color:#6b7280;line-height:1.5;margin-bottom:8px;">
+                    ${tests.slice(0, 2).map(t => `<span style="color:#374151;font-weight:500;">${t.test_value || '—'} ${t.unit || ''}</span> ${t.test_name.split(',')[0]}`).join(' · ')}${tests.length > 2 ? ` · +${tests.length - 2} more` : ''}
+                </div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;">${tagPills}</div>
+            </div>
+        </div>`;
+            }).join('');
         }
 
+        // ─── Main loader ─────────────────────────────────────────────
         async function loadData() {
-            const statusBadge = document.getElementById('statusBadge');
             try {
-                // CORRECT endpoint: /patient/{name}/chart-data (no /api/ prefix)
                 const res = await fetch(`http://127.0.0.1:8000/patient/${encodeURIComponent(patientName)}/chart-data`);
-
-                if (!res.ok) {
-                    throw new Error(`HTTP ${res.status}`);
-                }
-
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
                 const data = await res.json();
 
-                if (data.success && data.chart_data) {
-                    const testCount = Object.keys(data.chart_data).length;
-                    statusBadge.textContent = `${testCount} tests loaded`;
-                    statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-green-50 text-green-700';
+                if (!data.success) throw new Error('API returned failure');
 
-                    document.getElementById('patientSubtitle').textContent =
-                        `${data.raw_tests?.length || 0} lab entries across ${testCount} test types`;
+                const chartData = data.chart_data || {};
+                const rawTests = data.raw_tests || [];
 
-                    renderCharts(data.chart_data);
-                    renderTimeline(data.raw_tests);
-                } else {
-                    throw new Error('No data in response');
+                // Patient meta
+                const sample = rawTests[0];
+                if (sample) {
+                    document.getElementById('metaLab').textContent = (sample.lab_name || '—').split('-').slice(-1)[0]?.trim() || sample.lab_name;
+                    document.getElementById('metaDoctor').textContent = sample.doctor_name || '—';
                 }
-            } catch (e) {
-                console.error('Error loading data:', e);
-                statusBadge.textContent = 'Failed to load';
-                statusBadge.className = 'px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-red-50 text-red-600';
-                document.getElementById('chartsContainer').innerHTML =
-                    `<div class="bg-white rounded-2xl p-8 border border-red-100 text-center">
-                        <span class="material-symbols-outlined text-3xl text-red-300 mb-2 block">error</span>
-                        <p class="text-red-500 font-semibold text-sm">Could not load chart data</p>
-                        <p class="text-slate-400 text-xs mt-1">Ensure backend is running at <code>http://127.0.0.1:8000</code></p>
-                        <p class="text-slate-400 text-xs mt-0.5">Error: ${e.message}</p>
-                    </div>`;
-                document.getElementById('timelineEntries').innerHTML =
-                    '<p class="pl-10 text-red-400 text-sm">Failed to load timeline.</p>';
-                document.getElementById('summaryPills').innerHTML = '';
+                const uniqueTests = new Set(rawTests.map(t => t.test_name)).size;
+                const uniqueDates = new Set(rawTests.map(t => t.test_date)).size;
+                document.getElementById('metaTests').textContent = `${uniqueTests} types`;
+                document.getElementById('metaDates').textContent = `${uniqueDates} sessions`;
+
+                renderStat(chartData);
+                renderTrendChart(chartData);
+                renderDonut(rawTests);
+                renderHeatmap(rawTests);
+                renderTestCards(chartData);
+                renderTimeline(rawTests);
+
+            } catch (err) {
+                console.error('Failed to load data:', err);
+                document.getElementById('patientNameMain').textContent = patientName;
+                ['trendChart', 'donutChart'].forEach(id => {
+                    const c = document.getElementById(id);
+                    if (c) { const ctx = c.parentElement; if (ctx) ctx.innerHTML = `<div style="color:#ef4444;font-size:13px;padding:20px;">Failed to load. ${err.message}</div>`; }
+                });
+                document.getElementById('testCardsGrid').innerHTML = `<div style="grid-column:1/-1;background:#fef2f2;border-radius:12px;padding:20px;text-align:center;color:#dc2626;font-size:13px;font-weight:500;">
+            <div>⚠️ Could not load data from backend</div>
+            <div style="font-size:11px;margin-top:4px;color:#ef4444;">Make sure backend is running at http://127.0.0.1:8000</div>
+        </div>`;
+                document.getElementById('timelineContainer').innerHTML = `<div style="color:#ef4444;font-size:12px;">Failed to load timeline.</div>`;
             }
         }
 
