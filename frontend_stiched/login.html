@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Login | Clinical Precision Framework</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-container": "#475c7f",
+                        "inverse-surface": "#2d3133",
+                        "tertiary-container": "#a04401",
+                        "surface-tint": "#255dad",
+                        "secondary-container": "#c0d5ff",
+                        "on-background": "#191c1e",
+                        "secondary-fixed-dim": "#b2c7f0",
+                        "error-container": "#ffdad6",
+                        "on-tertiary-container": "#ffd1bc",
+                        "on-surface-variant": "#424752",
+                        "surface-bright": "#f7f9fb",
+                        "outline-variant": "#c2c6d4",
+                        "on-error-container": "#93000a",
+                        "tertiary": "#7b3200",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-secondary-fixed": "#011b3c",
+                        "primary-fixed": "#d7e2ff",
+                        "on-primary-fixed-variant": "#00458f",
+                        "on-surface": "#191c1e",
+                        "inverse-primary": "#abc7ff",
+                        "on-tertiary-fixed": "#341100",
+                        "error": "#ba1a1a",
+                        "surface-container": "#eceef0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#f2f4f6",
+                        "surface": "#f7f9fb",
+                        "surface-container-highest": "#e0e3e5",
+                        "background": "#f7f9fb",
+                        "primary": "#004692",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#abc7ff",
+                        "primary-container": "#275fae",
+                        "outline": "#727783",
+                        "on-primary-fixed": "#001b3f",
+                        "secondary": "#4a5f83",
+                        "tertiary-fixed-dim": "#ffb691",
+                        "surface-variant": "#e0e3e5",
+                        "surface-dim": "#d8dadc",
+                        "on-tertiary-fixed-variant": "#783100",
+                        "on-secondary-fixed-variant": "#324769",
+                        "on-primary-container": "#cbdbff",
+                        "secondary-fixed": "#d6e3ff",
+                        "inverse-on-surface": "#eff1f3",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#e6e8ea"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Inter"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            },
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+
+        .signature-gradient {
+            background: linear-gradient(135deg, #004692 0%, #275fae 100%);
+        }
+
+        .tinted-shadow {
+            box-shadow: 0 24px 40px -10px rgba(25, 28, 30, 0.04);
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(194, 198, 212, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-on-surface overflow-hidden">
+    <!-- TopNavBar Suppression Check: Transactional page, using basic branding only -->
+    <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-8 py-6 pointer-events-none">
+        <div class="text-xl font-bold text-primary tracking-tight pointer-events-auto">Jeevan</div>
+        <div class="flex gap-6 pointer-events-auto">
+            <span class="text-slate-500 text-sm font-medium tracking-tight">Support</span>
+            <span class="text-slate-500 text-sm font-medium tracking-tight">Security Protocols</span>
+        </div>
+    </header>
+    <main class="flex h-screen w-full">
+        <!-- Visual Side (Left) -->
+        <section class="hidden lg:flex lg:w-1/2 relative overflow-hidden bg-primary">
+            <img alt="Professional medical environment"
+                class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay"
+                data-alt="Close-up of a high-tech medical laboratory with soft blue ambient lighting and blurred scientific glassware in the background"
+                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDO0peC9bWbH8pUz9xUY3YjAslcfU343837i2wkyoBqLsedsbkCoVBVWqqEc8Tpg0Jl7MCWUQ8IgpMocZPNBDpdbgaPEBibiJe-Anxc7kfIlxrWNjcca3D7CSmAAh9ZD3PoTrY3al16Y46ASxrhofQMXW7f7-uJfw44ligs1GCwmWOkqhDmrJJGZ9QWnOvdyG1AAUloNivhRwXbYVGL_isGXod5PJahjaYzhpHMDWT_f-LKL69G6EWZFuxFbzISishsvlCv5MiuLD5f" />
+            <div class="absolute inset-0 signature-gradient opacity-40"></div>
+            <div class="relative z-10 flex flex-col justify-center px-24 text-on-primary">
+                <span class="text-xs font-bold uppercase tracking-[0.2em] mb-4 opacity-80">Provider Access</span>
+                <h1 class="text-5xl font-extrabold tracking-tighter mb-6 leading-tight">The Curated Sanctuary <br />for
+                    Jeevan Excellence.</h1>
+                <p class="text-lg opacity-90 max-w-md font-light leading-relaxed">
+                    Accessing your patient data with mathematical precision and atmospheric clarity.
+                </p>
+                <div class="mt-12 flex items-center gap-4">
+                    <div
+                        class="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
+                        <span class="material-symbols-outlined text-white"
+                            data-icon="verified_user">verified_user</span>
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold">Tier-4 Encrypted</p>
+                        <p class="text-xs opacity-70">HIPAA Compliant Infrastructure</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Abstract Grid Pattern Overlay -->
+            <div class="absolute inset-0 opacity-[0.03]"
+                style="background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 40px 40px;">
+            </div>
+        </section>
+        <!-- Form Side (Right) -->
+        <section class="w-full lg:w-1/2 bg-surface flex items-center justify-center p-8 md:p-16">
+            <div class="w-full max-w-md">
+                <div class="mb-12 text-center lg:text-left">
+                    <h2 class="text-2xl font-bold text-on-surface tracking-tight mb-2">Welcome Back, Doctor</h2>
+                    <p class="text-on-surface-variant text-sm">Please authenticate to access the Jeevan Framework.</p>
+                </div>
+                <!-- Biometric Section -->
+                <div class="grid grid-cols-2 gap-4 mb-10">
+                    <button onclick="window.location.href='screen1.html';"
+                        class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest rounded-xl tinted-shadow border border-transparent hover:border-primary/20 transition-all group">
+                        <div
+                            class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-3xl" data-icon="faceid">face</span>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Face ID</span>
+                    </button>
+                    <button onclick="window.location.href='screen1.html';"
+                        class="flex flex-col items-center justify-center p-6 bg-surface-container-lowest rounded-xl tinted-shadow border border-transparent hover:border-primary/20 transition-all group">
+                        <div
+                            class="w-16 h-16 rounded-full bg-primary-fixed flex items-center justify-center mb-4 group-hover:scale-105 transition-transform">
+                            <span class="material-symbols-outlined text-primary text-3xl"
+                                data-icon="fingerprint">fingerprint</span>
+                        </div>
+                        <span class="text-xs font-bold uppercase tracking-widest text-on-surface-variant">Touch
+                            ID</span>
+                    </button>
+                </div>
+                <div class="relative flex items-center py-4 mb-6">
+                    <div class="flex-grow border-t border-outline-variant opacity-30"></div>
+                    <span class="flex-shrink mx-4 text-xs font-medium text-slate-400 uppercase tracking-widest">or email
+                        access</span>
+                    <div class="flex-grow border-t border-outline-variant opacity-30"></div>
+                </div>
+                <!-- Manual Login Form -->
+                <form class="space-y-5" onsubmit="event.preventDefault(); window.location.href='screen1.html';">
+                    <div class="space-y-2">
+                        <label
+                            class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant ml-1">Medical
+                            License Email</label>
+                        <input
+                            class="w-full px-5 py-4 bg-surface-container-lowest border-none rounded-xl tinted-shadow text-sm focus:ring-2 focus:ring-primary/20 transition-shadow placeholder:text-slate-300"
+                            placeholder="dr.smith@jeevan.com" type="email" />
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label
+                                class="text-[11px] font-bold uppercase tracking-widest text-on-surface-variant ml-1">Secure
+                                Password</label>
+                            <a class="text-[10px] font-bold uppercase tracking-widest text-primary hover:text-primary-container transition-colors"
+                                href="#">Recover Access</a>
+                        </div>
+                        <input
+                            class="w-full px-5 py-4 bg-surface-container-lowest border-none rounded-xl tinted-shadow text-sm focus:ring-2 focus:ring-primary/20 transition-shadow placeholder:text-slate-300"
+                            placeholder="••••••••••••" type="password" />
+                    </div>
+                    <button
+                        class="w-full py-4 signature-gradient text-on-primary font-bold rounded-xl tinted-shadow hover:opacity-95 transition-all mt-4 text-sm tracking-tight flex items-center justify-center gap-2"
+                        type="submit">
+                        Access Portal
+                        <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+                    </button>
+                </form>
+                <div class="mt-12 flex flex-wrap justify-center gap-8 opacity-40 grayscale contrast-125">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xl" data-icon="security">security</span>
+                        <span class="text-[10px] font-bold uppercase tracking-tighter">HIPAA COMPLIANT</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xl" data-icon="lock">lock</span>
+                        <span class="text-[10px] font-bold uppercase tracking-tighter">AES-256 BIT</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-xl" data-icon="gpp_maybe">gpp_maybe</span>
+                        <span class="text-[10px] font-bold uppercase tracking-tighter">TIER-4 DATA</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer Mapping from JSON -->
+    <footer
+        class="fixed bottom-0 w-full flex flex-col md:flex-row justify-between items-center px-12 py-8 bg-transparent pointer-events-none">
+        <div class="text-slate-400 text-[11px] font-medium uppercase tracking-widest pointer-events-auto">© 2024 Jeevan
+            Framework. HIPAA Compliant Tier-4 Data Center.</div>
+        <div class="flex gap-8 mt-4 md:mt-0 pointer-events-auto">
+            <a class="text-slate-400 text-[11px] font-medium uppercase tracking-widest hover:text-blue-900 transition-opacity duration-300"
+                href="#">Privacy Policy</a>
+            <a class="text-slate-400 text-[11px] font-medium uppercase tracking-widest hover:text-blue-900 transition-opacity duration-300"
+                href="#">Terms of Service</a>
+            <a class="text-slate-400 text-[11px] font-medium uppercase tracking-widest hover:text-blue-900 transition-opacity duration-300"
+                href="#">Security Whitepaper</a>
+        </div>
+    </footer>
+</body>
+
+</html>

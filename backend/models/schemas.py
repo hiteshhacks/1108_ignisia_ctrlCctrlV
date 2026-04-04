@@ -1,4 +1,5 @@
 import json
+from typing import Optional, Dict
 from pydantic import BaseModel
 
 class ExtractionResponse(BaseModel):
@@ -12,4 +13,5 @@ class ReasoningRequest(BaseModel):
 class ReasoningResponse(BaseModel):
     success: bool
     reasoning: str
+    family_communication: Optional[Dict[str, str]] = None
     message: str
