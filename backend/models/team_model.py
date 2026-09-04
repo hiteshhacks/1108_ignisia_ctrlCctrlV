@@ -1,3 +1,4 @@
+from torch.backends.opt_einsum import strategy
 import os
 from pathlib import Path
 from typing import TypedDict, Optional
@@ -25,6 +26,7 @@ def get_llm():
         model=MODEL_NAME,
         groq_api_key=api_key,
         temperature=0.2,
+        
     )
 
 

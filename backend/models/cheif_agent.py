@@ -4,6 +4,8 @@ from utils.outlier import detect_outliers
 from tools.RAG.retrival import medical_guideline_rag
 from groq import Groq
 from dotenv import load_dotenv
+from litellm import completion
+
 import os 
 load_dotenv()
 Api_key = os.getenv("GROQ_API_KEY")
@@ -65,9 +67,14 @@ async def run_chief_agent(patient_name: str):
     - Safety Disclaimer
     """
 
-    response = client.chat.completions.create(
-        model="openai/gpt-oss-20b",
-        messages=[{"role": "user", "content": prompt}]
+    response = completion(
+        model="groq/openai/gpt-oss-20b",
+        messages=[{"role": "user", "content": prompt}],
+        fallbacks=[
+            "groq/openai/gpt-oss-safeguard-20b",
+            "groq/openai/gpt-oss-120b",
+            "groq/llama-3.3-70b-versatile"
+        ]
     )
 
     return {

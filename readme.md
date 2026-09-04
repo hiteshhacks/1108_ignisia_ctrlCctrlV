@@ -11,12 +11,9 @@
 <h1 align="center">🏥 Jeevan — AI-Powered ICU & Medical Intelligence Platform</h1>
 
 <p align="center">
-  <strong>An end-to-end agentic AI system for medical report extraction, clinical reasoning, sepsis risk detection, and family-friendly health communication — powered by multi-agent orchestration, RAG, and vision AI.</strong>
+  <strong>An end-to-end agentic AI system for medical report extraction, clinical reasoning, sepsis risk detection, PII privacy sanitization, and family-friendly health communication — powered by LangGraph multi-agent orchestration, RAG, and vision AI.</strong>
 </p>
 
-<p align="center">
-  <em>Built for the Ignisia Hackathon • April 2026</em>
-</p>
 
 ---
 
@@ -24,6 +21,7 @@
 
 - [Overview](#-overview)
 - [Key Features](#-key-features)
+- [Project Directory Structure](#-project-directory-structure)
 - [Architecture Diagram](#-architecture-diagram)
 - [Workflow Diagram](#-workflow-diagram)
 - [Tech Stack](#-tech-stack)
@@ -42,11 +40,11 @@
 
 **Jeevan** is a full-stack, AI-driven medical intelligence platform designed for ICU monitoring and early sepsis detection. It transforms raw medical report images into structured, actionable clinical insights through a sophisticated multi-step AI pipeline:
 
-1. **Vision AI** extracts structured data from medical report images  
-2. **Multi-agent reasoning** (LangGraph StateGraph orchestration) analyzes trends, abnormalities, and risks  
-3. **RAG-augmented validation** enriches findings with clinical guideline citations  
-4. **Chief Agent** provides senior-doctor-level risk assessment with temporal analysis  
-5. **Family Communication Layer** translates clinical reports into simple, compassionate language — in English and Hindi  
+1. **Vision AI** extracts structured data from medical report images   
+2. **Multi-agent reasoning** (LangGraph StateGraph orchestration) analyzes trends, abnormalities, and clinical risks  
+3. **RAG-augmented validation** enriches findings with clinical guideline citations from Qdrant vector database  
+4. **Chief Agent** provides senior-doctor-level risk assessment with temporal trend mapping and $3\sigma$ statistical anomaly detection  
+5. **Family Communication Layer** translates clinical reports into simple, compassionate language in both English and Hindi  
 
 The platform bridges the critical gap between complex medical data and human understanding, serving both clinicians (with data-driven dashboards) and patient families (with jargon-free summaries).
 
@@ -56,34 +54,39 @@ The platform bridges the critical gap between complex medical data and human und
 
 ### 🔬 Intelligent Medical Data Extraction
 - Upload medical report images (JPG, PNG, WEBP)
-- AI-powered extraction using **LLaMA 4 Scout** vision model via Groq
+- AI-powered extraction using **qwen/qwen3.8-27b** multimodal vision model via Groq
 - Automatic extraction of patient info, test names, values, units, reference ranges, dates, lab/doctor details
-- Image compression & optimization pipeline for consistent results
-- Persistent storage with automatic patient deduplication
+- Image compression & optimization pipeline for consistent OCR/VQA results
+- Persistent storage in SQLite with automatic patient deduplication
+
+### 🛡️ Built-in PII Anonymization & Privacy Guard
+- Zero-overhead native regex sanitization middleware
+- Anonymizes sensitive personal identifiable information (emails, phone numbers, social security / Aadhaar numbers, explicit identifiers) before sending payloads to external LLMs
+- Ensures HIPAA-conscious privacy and safe agentic reasoning
 
 ### 🧠 Multi-Agent Clinical Reasoning (LangGraph)
-- **Medical Data Analyst Agent** — identifies abnormalities, trends, and correlations
-- **Health Advisor Agent** — generates safe, non-diagnostic lifestyle recommendations
-- **Medical Reasoning Team Lead** — synthesizes agent findings into structured clinical insights
+- **Medical Data Analyst Agent** — identifies clinical abnormalities, historical trends, and cross-test correlations
+- **Health Advisor Agent** — generates safe, evidence-based, non-diagnostic monitoring recommendations
+- **Medical Reasoning Team Lead** — synthesizes agent findings into structured clinical assessments
 - Built on **LangGraph** `StateGraph` multi-agent orchestration with **Groq** (`openai/gpt-oss-120b`)
 
 ### 🩺 Chief Agent — Senior ICU Doctor Simulation
-- Temporal mapping of all test results across time
-- Statistical outlier detection (3σ method) for anomaly flagging
-- Disease progression identification and sepsis/organ failure risk detection
-- Contextual reasoning with medical guideline citations via RAG
+- Temporal mapping of all test results across chronological data points
+- Statistical outlier detection ($3\sigma$ standard deviation method) for anomaly flagging
+- Disease progression tracking and sepsis/organ failure risk scoring
+- Contextual reasoning enriched with medical guideline citations via RAG
 
 ### 📚 RAG (Retrieval-Augmented Generation)
-- Indexed medical PDFs: sepsis protocols, early warning scores, organ dysfunction guidelines
+- Pre-indexed medical guideline PDFs: sepsis protocols, early warning scores (EWS), organ dysfunction (SOFA) guidelines, and ICU warnings
 - Vector search via **Qdrant** with `sentence-transformers/all-MiniLM-L6-v2` embeddings
-- Auto-generated search queries from clinical findings for targeted retrieval
-- Final reports cite specific guideline sources for clinical validation
+- Auto-generated search queries from clinical findings for targeted context retrieval
+- Final reports cite specific guideline sources for verifiable clinical validation
 
 ### 👨‍👩‍👧 Family-Friendly Communication
-- Rewrites clinical reports in simple, compassionate layman language
-- Structured sections: what reports show, things to watch, good signs, next steps, family message
-- Uses warm analogies and everyday comparisons (no jargon, no numbers)
-- **Multi-language support**: automated translation to Hindi (extensible to other languages)
+- Rewrites dense clinical reports into simple, compassionate layman language
+- Structured sections: *What reports show*, *Things to watch*, *Good signs*, *Next steps*, and *Message for the family*
+- Warm analogies and everyday comparisons (eliminates medical jargon and confusing metrics)
+- **Multi-language support**: automated translation into Hindi (extensible to additional regional languages)
 
 ### 📊 Analytics & Visualization
 - Patient chart data API optimized for frontend charting (Chart.js/Recharts)
@@ -114,16 +117,16 @@ The platform bridges the critical gap between complex medical data and human und
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
 | **Backend Framework** | FastAPI + Uvicorn | High-performance async REST API |
-| **Vision AI** | Groq + LLaMA 4 Scout 17B | Medical report image extraction |
+| **Vision AI** | qwen/qwen3.8-27b | Medical report image parsing and OCR |
 | **Multi-Agent Reasoning** | LangGraph + LangChain Groq | Multi-agent state graph clinical reasoning |
-| **Chief Agent LLM** | Groq + GPT-OSS-20B | Senior doctor-level reasoning |
-| **RAG Vector DB** | Qdrant (Cloud/Local) | Medical guideline retrieval |
-| **Embeddings** | HuggingFace `all-MiniLM-L6-v2` | Semantic document search |
-| **Document Processing** | LangChain + PyPDF | PDF loading, splitting, indexing |
-| **Database** | SQLite | Patient & test data persistence |
-| **Image Processing** | Pillow (PIL) | Image compression, base64 encoding |
-| **Frontend** | HTML5 + TailwindCSS + Chart.js | Responsive clinical dashboard |
-| **Translation** | Groq LLM | Multi-language family communication |
+| **Chief Agent LLM** | Groq + GPT-OSS-20B / 120B | Senior doctor-level clinical synthesis |
+| **RAG Vector DB** | Qdrant (Cloud) | Medical guideline storage and semantic retrieval |
+| **Embeddings** | HuggingFace `all-MiniLM-L6-v2` | Dense vector embeddings for clinical guidelines |
+| **Document Ingestion** | LangChain + PyPDF | PDF guideline loading, splitting, and indexing |
+| **Database** | SQLite | Patient records & historical test persistence |
+| **Image Processing** | Pillow (PIL) | Image optimization, resizing, and base64 encoding |
+| **Frontend** | HTML5 + TailwindCSS + Chart.js | Responsive clinical dashboard & family portal |
+| **Translation** | Groq LLM | Multi-language family communication (English & Hindi) |
 
 ---
 
@@ -136,7 +139,7 @@ Medical Report Image
         │
         ▼
 ┌─────────────────┐
-│ File Validation  │ ← JPG/PNG/WEBP only
+│ File Validation  │ ← JPG / PNG / WEBP validation
 ├─────────────────┤
 │ Image Compress   │ ← Resize to 1024x1024, JPEG quality 80
 ├─────────────────┤
@@ -146,36 +149,39 @@ Medical Report Image
 │ (Structured JSON │   Extracts: patient, tests[], timeline,
 │  extraction)     │   lab_name, doctor_name
 ├─────────────────┤
-│ JSON Parsing     │ ← Robust extraction from LLM response
+│ JSON Parsing     │ ← Robust extraction & normalization
 ├─────────────────┤
 │ SQLite Storage   │ ← Auto-deduplicates patients by name
 └─────────────────┘
 ```
 
-### Pipeline 2: Full Clinical Reasoning (`/reason-medical`)
+### Pipeline 2: Full Clinical Reasoning & Family Summary (`/reason-medical`)
 
 ```
 Patient Name (input)
         │
         ▼
 ┌──────────────────────────────────────────────────────────┐
-│ Step 1: Fetch all historical tests from SQLite           │
+│ Step 1: Fetch historical tests from SQLite database      │
 ├──────────────────────────────────────────────────────────┤
-│ Step 2: Multi-Agent Reasoning (LangGraph StateGraph)     │
+│ Step 2: Privacy Sanitizer (PII Redaction)                │
+│   └─ Strips phone, email, SSN/Aadhaar, direct IDs        │
+├──────────────────────────────────────────────────────────┤
+│ Step 3: Multi-Agent Reasoning (LangGraph StateGraph)     │
 │   ├─ Medical Data Analyst → abnormalities, trends,       │
 │   │                          correlations, data quality  │
 │   ├─ Health Advisor → recommendations, risk indicators,  │
 │   │                    monitoring suggestions             │
 │   └─ Team Synthesizer → consolidated clinical assessment │
 ├──────────────────────────────────────────────────────────┤
-│ Step 3: RAG Augmentation                                 │
+│ Step 4: RAG Augmentation                                 │
 │   ├─ Generate targeted search queries from findings      │
-│   ├─ Vector search in Qdrant (medical PDFs)              │
+│   ├─ Vector similarity search in Qdrant (medical PDFs)   │
 │   └─ LLM synthesizes final report with guideline cites   │
 ├──────────────────────────────────────────────────────────┤
-│ Step 4: Family Communication                             │
-│   ├─ Rewrite report in simple layman language             │
-│   └─ Translate to Hindi                                  │
+│ Step 5: Family Communication                             │
+│   ├─ Rewrite clinical report into layman language        │
+│   └─ Translate summary to Hindi                          │
 └──────────────────────────────────────────────────────────┘
         │
         ▼
@@ -194,13 +200,13 @@ Patient Name (input)
 Patient Name → DB Lookup → Temporal Mapping → Outlier Detection (3σ)
         │
         ▼
-RAG Context Retrieval (medical guidelines)
+RAG Context Retrieval (medical guidelines from Qdrant)
         │
         ▼
 Chief Agent LLM Prompt (Senior ICU Doctor role):
   ├─ Disease progression identification
   ├─ Sepsis / organ failure risk assessment
-  ├─ Outlier analysis (ignore if inconsistent)
+  ├─ Outlier analysis (identifies anomalous lab artifacts)
   ├─ Evidence-based reasoning with guideline citations
   └─ Safety disclaimer
 ```
@@ -214,10 +220,10 @@ Chief Agent LLM Prompt (Senior ICU Doctor role):
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `POST` | `/extract` | Upload medical report image → AI extraction → store in DB |
-| `POST` | `/reason-medical` | Full clinical reasoning pipeline with family communication |
-| `GET` | `/patient/{patient_name}/chart-data` | Chart-optimized medical test data |
-| `GET` | `/report_explanation?patient_name=X` | Chief Agent clinical report |
-| `GET` | `/generate-report?patient_name=X` | Combined timeline + charts + AI report |
+| `POST` | `/reason-medical` | Full LangGraph clinical reasoning pipeline with family communication |
+| `GET` | `/patient/{patient_name}/chart-data` | Chart-optimized medical test trends and reference ranges |
+| `GET` | `/report_explanation?patient_name=X` | Chief Agent clinical evaluation & sepsis risk analysis |
+| `GET` | `/generate-report?patient_name=X` | Combined timeline + charts + AI report overview |
 | `GET` | `/health` | Service health check |
 
 ### `POST /extract`
@@ -285,15 +291,13 @@ Chief Agent LLM Prompt (Senior ICU Doctor role):
 
 ---
 
----
-
 ## ⚙ Setup & Installation
 
 ### Prerequisites
 
 - **Python 3.10+**
 - **Groq API Key** (for LLM inference — [console.groq.com](https://console.groq.com))
-- **Qdrant instance** (cloud or local — [qdrant.tech](https://qdrant.tech))
+- **Qdrant instance** (Cloud or Local — [qdrant.tech](https://qdrant.tech))
 - **Git**
 
 ### 1. Clone the Repository
@@ -323,7 +327,7 @@ pip install -r requirements.txt
 
 ### 4. Configure Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root (or inside `backend/`):
 
 ```env
 GROQ_API_KEY=your_groq_api_key_here
@@ -338,7 +342,7 @@ cd backend
 python -m tools.RAG.indexing
 ```
 
-This indexes the medical PDF documents into the Qdrant vector store.
+This chunks and indexes the medical PDF documents into your Qdrant vector collection.
 
 ### 6. Start the Backend Server
 
@@ -347,11 +351,11 @@ cd backend
 python main.py
 ```
 
-The API will be available at `http://localhost:8000`.
+The API will be available at `http://localhost:8000` (API docs at `http://localhost:8000/docs`).
 
 ### 7. Open the Frontend
 
-Simply open any of the HTML files from `frontend_stiched/` in your browser:
+Open any of the HTML pages in `frontend_stiched/` in your browser:
 
 ```bash
 # Windows
@@ -361,7 +365,7 @@ start frontend_stiched\login.html
 open frontend_stiched/login.html
 ```
 
-> **Note:** Ensure the backend is running at `http://localhost:8000` for API calls to work.
+> **Note:** Ensure the backend is running at `http://localhost:8000` so that AJAX requests function seamlessly.
 
 ---
 
@@ -369,8 +373,7 @@ open frontend_stiched/login.html
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `GROQ_API_KEY` | ✅ | API key for Groq LLM inference (vision + LangGraph multi-agent reasoning + translation) |
-| `GROQ_MODEL` | ❌ | Model name for LangGraph medical team (defaults to `openai/gpt-oss-120b`) |
+| `GROQ_API_KEY` | ✅ | API key for Groq LLM inference (vision, LangGraph reasoning, translations) |
 | `QDRANT_URL` | ✅ | URL of your Qdrant vector database instance |
 | `QDRANT_API_KEY_CLOUD` | ✅ | API key for Qdrant cloud authentication |
 
@@ -378,7 +381,7 @@ open frontend_stiched/login.html
 
 ## 📚 RAG Knowledge Base
 
-The RAG system is pre-loaded with authoritative medical guideline PDFs:
+The RAG system is pre-loaded with authoritative medical guideline PDFs in `backend/tools/RAG/DATA/`:
 
 | Document | Content |
 |----------|---------|
@@ -389,7 +392,7 @@ The RAG system is pre-loaded with authoritative medical guideline PDFs:
 | `sepsis_rag_dataset.pdf` | Supplementary sepsis detection data |
 | `sepsis_warnig.pdf` | Sepsis warning indicators and clinical pathways |
 
-**To add custom guidelines:** Place PDF files in `backend/tools/RAG/DATA/` and re-run the indexing script.
+**To add custom guidelines:** Place PDF files in `backend/tools/RAG/DATA/` and re-run `python -m tools.RAG.indexing`.
 
 ---
 
@@ -418,42 +421,29 @@ The application uses SQLite with two core tables:
 | `lab_name` | TEXT | — |
 | `doctor_name` | TEXT | — |
 
-> Patient deduplication is handled automatically by matching on uppercase patient name. Uploading multiple reports for the same patient appends new test data to their existing record.
+> Patient deduplication is handled automatically by matching uppercase patient name. Uploading subsequent reports for the same patient appends new test data to their existing history.
 
 ---
 
 ## 🚀 Usage Walkthrough
 
 ### Step 1: Upload a Medical Report
-Navigate to the **Upload Screen** and upload a medical report image. The AI will extract structured data and save it to the database.
+Navigate to **Upload Screen** (`screen1.html`) and upload a medical report image. The AI extracts structured lab test metrics and saves them to the database.
 
 ### Step 2: View Analytics Dashboard
-Go to the **Dashboard** to see interactive charts of test values over time, grouped by test name with reference ranges displayed.
+Go to the **Dashboard** (`screen2.html`) to inspect interactive charts of test values over time, grouped by test name with reference ranges displayed.
 
 ### Step 3: Generate AI Clinical Report
-On the **Report Screen**, enter the patient name and trigger the full reasoning pipeline. The system will:
-- Analyze all historical data through multi-agent reasoning
-- Retrieve relevant medical guidelines via RAG
-- Generate a comprehensive clinical report with citations
+On the **Report Screen** (`screen3.html`), enter the patient name and trigger the full reasoning pipeline to get an evidence-backed clinical assessment with guideline citations.
 
 ### Step 4: Share with Family
-Visit the **Family Dashboard** to generate a simplified, compassionate summary. Toggle between English and Hindi translations to share with family members.
-
----
-
-## 🖼 Screenshots
-
-> The frontend features a premium clinical design with Material Design 3 aesthetics, glassmorphism panels, smooth transitions, and data-rich dashboards built with Chart.js.
-
-| Login Screen | Upload Screen | Dashboard | Family Dashboard |
-|:---:|:---:|:---:|:---:|
-| Secure authentication portal | AI-powered report upload | Interactive medical charts | Layman-friendly health reports |
+Visit the **Family Dashboard** (`family_dashboard.html`) to view the simplified, compassionate summary with Hindi translation.
 
 ---
 
 ## ⚠ Disclaimer
 
-> **This software is for informational and decision-support purposes only.** It is NOT a substitute for professional medical diagnosis, treatment, or advice. All outputs include AI-generated analysis that may contain errors. Always consult a qualified healthcare professional for clinical decisions. The system complies with standard safety practices but should be validated by medical professionals before use in any clinical setting.
+> **This software is for informational and decision-support purposes only.** It is NOT a substitute for professional medical diagnosis, treatment, or advice. All outputs include AI-generated analysis that may contain errors. Always consult a qualified healthcare professional for clinical decisions.
 
 ---
 
