@@ -2,6 +2,7 @@
   <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" />
   <img src="https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white" />
   <img src="https://img.shields.io/badge/Groq-FF6600?style=for-the-badge&logo=groq&logoColor=white" />
+  <img src="https://img.shields.io/badge/LangGraph-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" />
   <img src="https://img.shields.io/badge/Qdrant-DC382D?style=for-the-badge&logo=qdrant&logoColor=white" />
   <img src="https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=langchain&logoColor=white" />
   <img src="https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white" />
@@ -42,7 +43,7 @@
 **Jeevan** is a full-stack, AI-driven medical intelligence platform designed for ICU monitoring and early sepsis detection. It transforms raw medical report images into structured, actionable clinical insights through a sophisticated multi-step AI pipeline:
 
 1. **Vision AI** extracts structured data from medical report images  
-2. **Multi-agent reasoning** (Agno framework) analyzes trends, abnormalities, and risks  
+2. **Multi-agent reasoning** (LangGraph StateGraph orchestration) analyzes trends, abnormalities, and risks  
 3. **RAG-augmented validation** enriches findings with clinical guideline citations  
 4. **Chief Agent** provides senior-doctor-level risk assessment with temporal analysis  
 5. **Family Communication Layer** translates clinical reports into simple, compassionate language — in English and Hindi  
@@ -60,11 +61,11 @@ The platform bridges the critical gap between complex medical data and human und
 - Image compression & optimization pipeline for consistent results
 - Persistent storage with automatic patient deduplication
 
-### 🧠 Multi-Agent Clinical Reasoning
+### 🧠 Multi-Agent Clinical Reasoning (LangGraph)
 - **Medical Data Analyst Agent** — identifies abnormalities, trends, and correlations
 - **Health Advisor Agent** — generates safe, non-diagnostic lifestyle recommendations
-- **Medical Reasoning Team** — coordinated team output with risk-level assessment
-- Built on the **Agno** multi-agent framework with GPT-OSS-120B
+- **Medical Reasoning Team Lead** — synthesizes agent findings into structured clinical insights
+- Built on **LangGraph** `StateGraph` multi-agent orchestration with **Groq** (`openai/gpt-oss-120b`)
 
 ### 🩺 Chief Agent — Senior ICU Doctor Simulation
 - Temporal mapping of all test results across time
@@ -114,7 +115,7 @@ The platform bridges the critical gap between complex medical data and human und
 |-------|-----------|---------|
 | **Backend Framework** | FastAPI + Uvicorn | High-performance async REST API |
 | **Vision AI** | Groq + LLaMA 4 Scout 17B | Medical report image extraction |
-| **Multi-Agent Reasoning** | Agno Framework + GPT-OSS-120B | Clinical data analysis team |
+| **Multi-Agent Reasoning** | LangGraph + LangChain Groq | Multi-agent state graph clinical reasoning |
 | **Chief Agent LLM** | Groq + GPT-OSS-20B | Senior doctor-level reasoning |
 | **RAG Vector DB** | Qdrant (Cloud/Local) | Medical guideline retrieval |
 | **Embeddings** | HuggingFace `all-MiniLM-L6-v2` | Semantic document search |
@@ -160,12 +161,12 @@ Patient Name (input)
 ┌──────────────────────────────────────────────────────────┐
 │ Step 1: Fetch all historical tests from SQLite           │
 ├──────────────────────────────────────────────────────────┤
-│ Step 2: Multi-Agent Reasoning (Agno Framework)           │
+│ Step 2: Multi-Agent Reasoning (LangGraph StateGraph)     │
 │   ├─ Medical Data Analyst → abnormalities, trends,       │
 │   │                          correlations, data quality  │
 │   ├─ Health Advisor → recommendations, risk indicators,  │
 │   │                    monitoring suggestions             │
-│   └─ Team Lead → consolidated risk assessment            │
+│   └─ Team Synthesizer → consolidated clinical assessment │
 ├──────────────────────────────────────────────────────────┤
 │ Step 3: RAG Augmentation                                 │
 │   ├─ Generate targeted search queries from findings      │
@@ -368,7 +369,8 @@ open frontend_stiched/login.html
 
 | Variable | Required | Description |
 |----------|----------|-------------|
-| `GROQ_API_KEY` | ✅ | API key for Groq LLM inference (vision + reasoning + translation) |
+| `GROQ_API_KEY` | ✅ | API key for Groq LLM inference (vision + LangGraph multi-agent reasoning + translation) |
+| `GROQ_MODEL` | ❌ | Model name for LangGraph medical team (defaults to `openai/gpt-oss-120b`) |
 | `QDRANT_URL` | ✅ | URL of your Qdrant vector database instance |
 | `QDRANT_API_KEY_CLOUD` | ✅ | API key for Qdrant cloud authentication |
 
