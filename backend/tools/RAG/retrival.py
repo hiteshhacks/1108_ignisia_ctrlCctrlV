@@ -11,7 +11,8 @@ load_dotenv()
 GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 MODEL_ID = "openai/gpt-oss-120b" # upgraded model for complex medical generation
 QDRANT_URL = os.getenv("QDRANT_URL","http://localhost:6366")
-COLLECTION_NAME = "ICU_RAG"
+# COLLECTION_NAME = "ICU_RAG"
+COLLECTION_NAME="Medical_Rag"
 
 # Embeddings
 embedding_model = HuggingFaceEmbeddings(
@@ -57,7 +58,7 @@ def generate_search_queries(report: str):
     """
     res = client.chat.completions.create(
         messages=[{"role": "user", "content": prompt}],
-        model="llama-3.1-8b-instant",
+        model="qwen/qwen3.8-27b",
         temperature=0.1,
         max_tokens=100
     )

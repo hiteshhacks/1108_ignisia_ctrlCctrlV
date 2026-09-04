@@ -44,7 +44,7 @@ def encode_to_base64(file_bytes: bytes) -> str:
 async def call_groq_vision(base64_content: str, prompt: str):
     try:
         completion = client.chat.completions.create(
-            model="meta-llama/llama-4-scout-17b-16e-instruct",
+            model="qwen/qwen3.8-27b",
             messages=[
                 {
                     "role": "user",
@@ -64,7 +64,7 @@ async def call_groq_vision(base64_content: str, prompt: str):
                 }
             ],
             temperature=0.2,
-            max_completion_tokens=1500,
+            max_completion_tokens=1000,
             top_p=1
         )
 

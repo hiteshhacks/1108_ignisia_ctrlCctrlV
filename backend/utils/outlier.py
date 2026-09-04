@@ -11,4 +11,4 @@ def detect_outliers(values):
         if abs(v - mean) > 3 * std:
             outliers.append(v)
 
-    return outliers
+    return outliers 
