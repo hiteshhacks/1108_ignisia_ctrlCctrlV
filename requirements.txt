@@ -13,3 +13,5 @@ langchain-huggingface
 qdrant-client
 sentence-transformers
 pypdf
+langgraph
+langchain-groq

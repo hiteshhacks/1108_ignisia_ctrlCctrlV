@@ -1,9 +1,9 @@
-# ── Load .env from project root before any module (Groq/Qdrant) reads env vars
+# ── Load .env from backend or project root before any module (Groq/Qdrant) reads env vars
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-_env_path = Path(__file__).parent.parent / ".env"
-load_dotenv(dotenv_path=_env_path, override=False)
+load_dotenv(dotenv_path=Path(__file__).parent / ".env", override=False)
+load_dotenv(dotenv_path=Path(__file__).parent.parent / ".env", override=False)
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
